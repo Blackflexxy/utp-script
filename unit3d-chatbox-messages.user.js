@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         UNIT3D chatbox - messages
-// @version      v1.0.2
+// @version      v1.0.3
 // @description  Chat functionalities: Reply, Message and Gift buttons. AutoScroll, Filter SysteBot.
 // @match        https://utp.to/
 // @updateURL    https://raw.githubusercontent.com/maksii/utp-script/main/unit3d-chatbox-messages.js
@@ -20,6 +20,7 @@
 
     let settings = {
         messageActions: false,
+        autoScroll: false,
         systemBot: false,
         systemBotRelease: false
     };
@@ -104,12 +105,10 @@
     function systemBot(setting) {
         console.log(`System Bot ${setting ? 'enabled' : 'disabled'}`)
         allSystemBot();
-
     }
     function systemBotRelease(setting) {
         console.log(`System Bot Release ${setting ? 'enabled' : 'disabled'}`)
         allSystemBot();
-
     }
 
     const renderOptions = function () {
@@ -192,17 +191,24 @@
             if (nextDiv) {
                 const hideSystemBot = readSetting('systemBot');
                 const hideSystemBotTorrents = readSetting('systemBotRelease');
-
+                
                 if (!nextDiv.querySelector('a[href*="/users/"]')) {
-                    message.parentElement.style.display = hideSystemBot ? 'none' : 'block';
+                    let shouldHide = hideSystemBot ? 'none' : 'block';
+                    if (message.parentElement.style.display !== shouldHide) {
+                        message.parentElement.style.display = shouldHide;
+                    }
                 }
 
                 if (nextDiv.querySelector('a[href*="/torrents/"]')) {
-                    message.parentElement.style.display = hideSystemBotTorrents ? 'none' : 'block';
+                    let shouldHide = hideSystemBotTorrents ? 'none' : 'block';
+                    if (message.parentElement.style.display !== shouldHide) {
+                        message.parentElement.style.display = shouldHide;
+                    }
                 }
             }
         }
     };
+
     const createIcon = (iconClass, clickHandler) => {
         const icon = document.createElement("i");
         icon.classList.add("fa", "solid");
