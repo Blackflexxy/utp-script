@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         UNIT3D chatbox - bbcode
-// @version      v1.0
+// @version      v1.1
 // @description  BBCode buttons
 // @match        https://utp.to/
-// @updateURL    https://raw.githubusercontent.com/maksii/utp-script/main/unit3d-chatbox-bbcode.js
-// @downloadURL  https://raw.githubusercontent.com/maksii/utp-script/main/unit3d-chatbox-bbcode.js
+// @updateURL    https://raw.githubusercontent.com/maksii/utp-script/main/unit3d-chatbox-bbcode.user.js
+// @downloadURL  https://raw.githubusercontent.com/maksii/utp-script/main/unit3d-chatbox-bbcode.user.js
 // @grant        none
 // ==/UserScript==
 

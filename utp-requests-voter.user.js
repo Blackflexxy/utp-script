@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         UTP Request Checker
 // @namespace    Violentmonkey Scripts
-// @version      1.3
+// @version      1.4
 // @description  Compare amounts and modify the vote button on UTP requests.
 // @match        https://utp.to/requests/*
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/maksii/utp-script/main/utp-requests-voter.js
-// @downloadURL  https://raw.githubusercontent.com/maksii/utp-script/main/utp-requests-voter.js
+// @updateURL    https://raw.githubusercontent.com/maksii/utp-script/main/utp-requests-voter.user.js
+// @downloadURL  https://raw.githubusercontent.com/maksii/utp-script/main/utp-requests-voter.user.js
 // ==/UserScript==
 
 

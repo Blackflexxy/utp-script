@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         UNIT3D chatbox - mentions
-// @version      v1.1
+// @version      v1.2
 // @description  mention user
 // @match        https://utp.to/
-// @updateURL    https://raw.githubusercontent.com/maksii/utp-script/main/unit3d-chatbox-mention.js
-// @downloadURL  https://raw.githubusercontent.com/maksii/utp-script/main/unit3d-chatbox-mention.js
+// @updateURL    https://raw.githubusercontent.com/maksii/utp-script/main/unit3d-chatbox-mention.user.js
+// @downloadURL  https://raw.githubusercontent.com/maksii/utp-script/main/unit3d-chatbox-mention.user.js
 // @grant        none
 // ==/UserScript==
 
