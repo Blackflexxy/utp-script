@@ -191,7 +191,7 @@
             if (nextDiv) {
                 const hideSystemBot = readSetting('systemBot');
                 const hideSystemBotTorrents = readSetting('systemBotRelease');
-                
+
                 if (!nextDiv.querySelector('a[href*="/users/"]')) {
                     let shouldHide = hideSystemBot ? 'none' : 'block';
                     if (message.parentElement.style.display !== shouldHide) {
@@ -235,8 +235,9 @@
         const header = message.querySelector(".chatbox-message__header, .message-header");
 
         if (!content || !username || !header) return;
-        // Check if icons already exist
-        if (header.querySelector(".reply-icon, .message-icon, .gift-icon")) return;
+
+        // Remove existing icons to prevent duplication
+        header.querySelectorAll(".reply-icon, .message-icon, .gift-icon").forEach(icon => icon.remove());
 
         const replyIcon = createIcon("fa-reply reply-icon", () => quoteMessage(username, content));
         const messageIcon = createIcon("fa-envelope message-icon", () => {
@@ -267,9 +268,9 @@
         });
     }
 
-    function newMessages() {
+    const newMessages = () => {
         const chatMessages = document.querySelector(selectors.chatMessages);
-        const updateLastMessages = (message) => {
+        const updateLastMessages = () => {
             const messages = Array.from(document.querySelectorAll(".chatbox-message, .message"));
             const lastMessages = messages.slice(-20);
 
@@ -277,10 +278,13 @@
                 addIconsToMessage(message);
                 systemBotMessages(message);
             });
-        }
+        };
 
-
-        const observer = new MutationObserver(() => updateLastMessages());
+        const observer = new MutationObserver(() => {
+            // Debounce logic
+            clearTimeout(observer.debounceTimeout);
+            observer.debounceTimeout = setTimeout(updateLastMessages, 100);
+        });
         observer.observe(chatMessages, { childList: true });
-    }
+    };
 })();
