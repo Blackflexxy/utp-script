@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         UNIT3D chatbox - messages
-// @version      v1.1
+// @version      v1.2
 // @description  Chat functionalities: Reply, Message and Gift buttons. AutoScroll, Filter SysteBot.
 // @match        https://utp.to/
 // @updateURL    https://raw.githubusercontent.com/maksii/utp-script/main/unit3d-chatbox-messages.user.js
