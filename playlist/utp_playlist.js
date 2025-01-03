@@ -86,9 +86,9 @@ console.log("\n2. Formatted BBCode table for movies not present in remux1080p:")
 console.log(bbcodeTable);
 
 // 2.1. Formatted BBCode table for movies by quality order
-const bbcodeTable = generateFullBBCodeTable(films);
+const bbcodeFullTable = generateFullBBCodeTable(films);
 console.log("\n2.1. Formatted BBCode table for movies by quality order:");
-console.log(bbcodeTable);
+console.log(bbcodeFullTable);
 
 // 3. List of all torrent IDs by quality order
 const torrentIdsByQuality = listTorrentIdsByQuality(films);
