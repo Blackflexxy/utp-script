@@ -6,6 +6,8 @@
 // @author       Valie (additions by Audionut)
 // @match        *://*/torrents/*
 // @match        *://*/requests/*
+// @updateURL    https://raw.githubusercontent.com/maksii/utp-script/main/external-links.user.js
+// @downloadURL  https://raw.githubusercontent.com/maksii/utp-script/main/external-links.user.js
 // ==/UserScript==
 
 //TODO: Grab/parse media title from torrent title, not metadata title
