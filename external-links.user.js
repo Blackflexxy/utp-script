@@ -1,187 +1,294 @@
 // ==UserScript==
 // @name         External Links on UNIT3D
 // @namespace    N/A
-// @version      0.3
+// @version      0.5
 // @description  Add links to other sites on the metadata section of a torrent item
-// @author       Valie (additions by Audionut)
 // @match        *://*/torrents/*
 // @match        *://*/requests/*
-// @updateURL    https://raw.githubusercontent.com/maksii/utp-script/main/external-links.user.js
-// @downloadURL  https://raw.githubusercontent.com/maksii/utp-script/main/external-links.user.js
+// @grant        GM.setValue
+// @grant        GM.getValue
+// @grant        GM.registerMenuCommand
 // ==/UserScript==
-
-//TODO: Grab/parse media title from torrent title, not metadata title
-
-/* CONFIGURATION */
-// 'Letterboxd', 'Rotten Tomatoes', 'PassThePopcorn', 'BroadcasTheNet', 'HDBits', 'Cinematik', 'Karagarga', 'BeyondHD', 'Blutopia', 'AsianCinema', 'Cinemaggedon', 'PTerClub', 'MoreThanTV', 'Aither', 'Anthelion', 'Retroflix', 'TV Vault', 'HUNO', 'Open Subtitles'
-const ENABLED_SITES = ['Letterboxd', 'Blutopia', 'Aither', 'Open Subtitles'];
-const ICON_FONT_SIZE = '24px';
-/* ------------- */
-
-const MOVIE_ONLY_SITES = ['Letterboxd', 'PassThePopcorn', 'Anthelion'];
-const TV_ONLY_SITES = ['BroadcasTheNet', 'TV Vault'];
-
-const SITES = [{
-        name: 'Letterboxd',
-        icon: 'fa-brands fa-square-letterboxd',
-        imdbSearchUrl: 'https://letterboxd.com/imdb/$Id',
-        tmdbSearchUrl: 'https://letterboxd.com/tmdb/$Id',
-        nameSearchUrl: 'https://letterboxd.com/search/?q=$Id'
-    },
-    {
-        name: 'Rotten Tomatoes',
-        icon: 'fa fa-tomato',
-        imdbSearchUrl: '',
-        tmdbSearchUrl: '',
-        nameSearchUrl: 'https://duckduckgo.com/?q=\\$Id+site%3Arottentomatoes.com'
-    },
-    {
-        name: 'PassThePopcorn',
-        icon: 'fa fa-film',
-        imdbSearchUrl: 'https://passthepopcorn.me/torrents.php?action=advanced&searchstr=$Id',
-        tmdbSearchUrl: '',
-        nameSearchUrl: 'https://passthepopcorn.me/torrents.php?action=advanced&searchstr=$Id'
-    },
-    {
-        name: 'BroadcasTheNet',
-        icon: 'fa-solid fa-power-off',
-        imdbSearchUrl: 'https://broadcasthe.net/torrents.php?action=advanced&imdb=$Id',
-        tmdbSearchUrl: '',
-        nameSearchUrl: 'https://broadcasthe.net/torrents.php?action=advanced&artistname=$Id'
-    },
-    {
-        name: 'HDBits',
-        icon: 'fa fa-high-definition',
-        imdbSearchUrl: 'https://hdbits.org/browse.php?sort=size&d=DESC&search=$Id',
-        tmdbSearchUrl: '',
-        nameSearchUrl: 'https://hdbits.org/browse.php?search=$Id'
-    },
-    {
-        name: 'Cinematik',
-        icon: 'fa-solid fa-clapperboard-play',
-        imdbSearchUrl: 'https://cinematik.net/torrents?&imdbId=$Id&sortField=size',
-        tmdbSearchUrl: 'https://cinematik.net/torrents?&tmdbId=$Id&sortField=size',
-        nameSearchUrl: 'https://cinematik.net/torrents?&name=$Id&sortField=size'
-    },
-    {
-        name: 'Karagarga',
-        icon: 'fa fa-crow',
-        imdbSearchUrl: 'https://karagarga.in/browse.php?search=$Id&search_type=imdb&sort=size&d=DESC',
-        tmdbSearchUrl: '',
-        nameSearchUrl: 'https://karagarga.in/browse.php?search=$Id&search_type=torrent'
-    },
-    {
-        name: 'BeyondHD',
-        icon: 'fa fa-circle-star',
-        imdbSearchUrl: 'https://beyond-hd.me/torrents?search=&doSearch=Search&imdb=$Id',
-        tmdbSearchUrl: 'https://beyond-hd.me/torrents?search=&doSearch=Search&tmdb=$Id',
-        nameSearchUrl: 'https://beyond-hd.me/torrents?search=$Id&doSearch=Search'
-    },
-    {
-        name: 'Blutopia',
-        icon: 'fa fa-rocket',
-        imdbSearchUrl: 'https://blutopia.cc/torrents?&imdbId=$Id&sortField=size',
-        tmdbSearchUrl: 'https://blutopia.cc/torrents?&tmdbId=$Id&sortField=size',
-        nameSearchUrl: 'https://blutopia.cc/torrents?&name=$Id&sortField=size'
-    },
-    {
-        name: 'AsianCinema',
-        icon: 'fa fa-dragon',
-        imdbSearchUrl: 'https://asiancinema.me/torrents?imdb=$Id',
-        tmdbSearchUrl: 'https://asiancinema.me/torrents?tmdb=$Id', //Not working
-        nameSearchUrl: 'https://asiancinema.me/torrents?name=$Id'
-    },
-    {
-        name: 'Cinemaggedon',
-        icon: 'fa-solid fa-radiation',
-        imdbSearchUrl: 'https://cinemageddon.net/browse.php?search=$Id',
-        tmdbSearchUrl: '',
-        nameSearchUrl: 'https://cinemageddon.net/browse.php?search=$Id'
-    },
-    {
-        name: 'PTerClub',
-        icon: 'fa fa-cat',
-        imdbSearchUrl: 'https://pterclub.com/torrents.php?incldead=0&search_area=4&search=$Id&sort=5&type=desc',
-        tmdbSearchUrl: '',
-        nameSearchUrl: 'https://pterclub.com/torrents.php?incldead=0&search_area=4&search=$Id&sort=5&type=desc'
-    },
-    {
-        name: 'MoreThanTV',
-        icon: 'fa-light fa-tv',
-        imdbSearchUrl: 'https://www.morethantv.me/torrents/browse?page=1&order_by=time&order_way=desc&=Search&=Reset&=Search&searchtext=$Id',
-        tmdbSearchUrl: '',
-        nameSearchUrl: 'https://www.morethantv.me/torrents/browse?page=1&order_by=time&order_way=desc&=Search&setdefault=Make Default&=Reset&=Search&searchtext=&action=advanced&title=$Id'
-    },
-    {
-        name: 'Aither',
-        icon: 'fa-light fa-tv-retro',
-        imdbSearchUrl: 'https://aither.cc/torrents?&imdbId=$Id&sortField=size',
-        tmdbSearchUrl: 'https://aither.cc/torrents?&imdbId=$Id&sortField=size',
-        nameSearchUrl: 'https://aither.cc/torrents?&name=$Id&sortField=size'
-    },
-    {
-        name: 'Anthelion',
-        icon: 'fa-light fa-futbol',
-        imdbSearchUrl: 'https://anthelion.me/torrents.php?searchstr=$Id',
-        tmdbSearchUrl: '',
-        nameSearchUrl: 'https://anthelion.me/torrents.php?searchstr=$Id'
-    },
-    {
-        name: 'Retroflix',
-        icon: 'fa-duotone fa-guitar',
-        imdbSearchUrl: 'https://retroflix.club/browse?years%5B%5D=1890&years%5B%5D=2024&includingDead=1&promotionType=&bookmarked=&search=$Id&searchIn=4&termMatchKind=0&submit=',
-        tmdbSearchUrl: '',
-        nameSearchUrl: 'https://retroflix.club/browse?years%5B%5D=1890&years%5B%5D=2024&includingDead=1&promotionType=&bookmarked=&search=$Id&searchIn=0&termMatchKind=0&submit='
-    },
-    {
-        name: 'TV Vault',
-        icon: 'fa-light fa-vault',
-        imdbSearchUrl: 'https://tv-vault.me/torrents.php?searchstr=&searchtags=&tags_type=1&groupdesc=&imdbid=$Id',
-        tmdbSearchUrl: '',
-        nameSearchUrl: 'https://tv-vault.me/torrents.php?searchstr=$Id'
-    },
-    {
-        name: 'HUNO',
-        icon: 'fa-duotone fa-00',
-        imdbSearchUrl: 'https://hawke.uno/torrents?perPage=25&imdbId=$Id',
-        tmdbSearchUrl: 'https://hawke.uno/torrents?perPage=25&tmdbId=$Id',
-        nameSearchUrl: 'https://hawke.uno/torrents?perPage=25&name=$Id'
-    },
-    {
-        name: 'Open Subtitles',
-        icon: 'fa-solid fa-closed-captioning',
-        imdbSearchUrl: 'https://www.opensubtitles.org/en/search/sublanguageid-all/imdbid-$Id',
-        tmdbSearchUrl: '',
-        nameSearchUrl: 'https://www.opensubtitles.org/en/search2/sublanguageid-all/moviename-$Id'
-    }
-];
-
-function addLink(site, imdbId, tmdbId, mediaTitle, externalLinksUl) {
-    let searchUrl = '';
-    if (imdbId != '' && site.imdbSearchUrl != '') {
-        searchUrl = site.imdbSearchUrl.replace('$Id', imdbId);
-    } else if (tmdbId != '' && site.tmdbSearchUrl != '') {
-        searchUrl = site.tmdbSearchUrl.replace('$Id', tmdbId);
-    } else if (mediaTitle != '' && site.nameSearchUrl != '') {
-        searchUrl = site.nameSearchUrl.replace('$Id', mediaTitle);
-    }
-    if (searchUrl != '') {
-        let newLink = document.createElement('a');
-        newLink.innerHTML = `<a href="${searchUrl}" title="${site.name}" target="_blank" class="meta-id-tag"><i class="${site.icon}"></i><div></div></a>`;
-        externalLinksUl.appendChild(newLink);
-    }
-}
 
 (function () {
     'use strict';
-    // I recommend using DecentralEyes so that stylesheets are not loaded from CloudFlare, but locally:
-    // Latest Font Awesome version to use Letterboxd's icon
-    document.head.insertAdjacentHTML('beforeend', '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" integrity="sha512-8RxmFOVaKQe/xtg6lbscU9DU0IRhURWEuiI0tXevv+lXbAHfkpamD4VKFQRto9WgfOJDwOZ74c/s9Yesv3VvIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />');
-    // The IMDB icon of the more recent Font Awesome versions is unreadable
-    document.head.insertAdjacentHTML('beforeend', '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" integrity="sha512-sVSECYdnRMezwuq5uAjKQJEcu2wybeAPjU4VJQ9pCRcCY4pIpIw4YMHIOQ0CypfwHRvdSPbH++dA3O4Hihm/LQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />');
 
-    //Style changes
-    const overriddenStyles = `
+    // Default configuration
+    const DEFAULT_CONFIG = {
+        ENABLED_SITES: ['Trakt', 'Letterboxd', 'Blutopia', 'Aither', 'Open Subtitles'],
+        ICON_FONT_SIZE: '24px',
+        ICON_IMAGE_SIZE: '50px'
+    };
+
+    // Sites configuration
+    const MOVIE_ONLY_SITES = ['Letterboxd', 'PassThePopcorn', 'Anthelion'];
+    const TV_ONLY_SITES = ['BroadcasTheNet', 'TV Vault'];
+
+    const SITES = [
+        {
+            name: 'Trakt',
+            icon: 'https://simpleicons.org/icons/trakt.svg',
+            imdbSearchUrl: 'https://trakt.tv/search/imdb/$Id',
+            tmdbSearchUrl: 'https://trakt.tv/search/tmdb/$Id',
+            nameSearchUrl: 'https://trakt.tv/search?query=$Id'
+        },
+        {
+            name: 'AniList',
+            icon: 'https://simpleicons.org/icons/anilist.svg',
+            imdbSearchUrl: '',
+            tmdbSearchUrl: '',
+            nameSearchUrl: 'https://anilist.co/search/anime?search=$Id'
+        },
+        {
+            name: 'AniDB',
+            icon: 'https://utp.to/img/meta/anidb.svg',
+            imdbSearchUrl: '',
+            tmdbSearchUrl: '',
+            nameSearchUrl: 'https://anidb.net/search/anime/?adb.search=$Id&do.search=1'
+        },
+        {
+            name: 'Letterboxd',
+            icon: 'https://simpleicons.org/icons/letterboxd.svg',
+            imdbSearchUrl: 'https://letterboxd.com/imdb/$Id',
+            tmdbSearchUrl: 'https://letterboxd.com/tmdb/$Id',
+            nameSearchUrl: 'https://letterboxd.com/search/?q=$Id'
+        },
+        {
+            name: 'Rotten Tomatoes',
+            icon: 'rottentomatoes',
+            imdbSearchUrl: '',
+            tmdbSearchUrl: '',
+            nameSearchUrl: 'https://duckduckgo.com/?q=\\$Id+site%3Arottentomatoes.com'
+        },
+        {
+            name: 'PassThePopcorn',
+            icon: 'fa fa-film',
+            imdbSearchUrl: 'https://passthepopcorn.me/torrents.php?action=advanced&searchstr=$Id',
+            tmdbSearchUrl: '',
+            nameSearchUrl: 'https://passthepopcorn.me/torrents.php?action=advanced&searchstr=$Id'
+        },
+        {
+            name: 'BroadcasTheNet',
+            icon: 'fa-solid fa-power-off',
+            imdbSearchUrl: 'https://broadcasthe.net/torrents.php?action=advanced&imdb=$Id',
+            tmdbSearchUrl: '',
+            nameSearchUrl: 'https://broadcasthe.net/torrents.php?action=advanced&artistname=$Id'
+        },
+        {
+            name: 'BeyondHD',
+            icon: 'fa fa-circle-star',
+            imdbSearchUrl: 'https://beyond-hd.me/torrents?search=&doSearch=Search&imdb=$Id',
+            tmdbSearchUrl: 'https://beyond-hd.me/torrents?search=&doSearch=Search&tmdb=$Id',
+            nameSearchUrl: 'https://beyond-hd.me/torrents?search=$Id&doSearch=Search'
+        },
+        {
+            name: 'Blutopia',
+            icon: 'fa fa-rocket',
+            imdbSearchUrl: 'https://blutopia.cc/torrents?&imdbId=$Id&sortField=size',
+            tmdbSearchUrl: 'https://blutopia.cc/torrents?&tmdbId=$Id&sortField=size',
+            nameSearchUrl: 'https://blutopia.cc/torrents?&name=$Id&sortField=size'
+        },
+        {
+            name: 'Aither',
+            icon: 'fa-light fa-tv-retro',
+            imdbSearchUrl: 'https://aither.cc/torrents?&imdbId=$Id&sortField=size',
+            tmdbSearchUrl: 'https://aither.cc/torrents?&imdbId=$Id&sortField=size',
+            nameSearchUrl: 'https://aither.cc/torrents?&name=$Id&sortField=size'
+        },
+        {
+            name: 'Open Subtitles',
+            icon: 'fa-solid fa-closed-captioning',
+            imdbSearchUrl: 'https://www.opensubtitles.org/en/search/sublanguageid-all/imdbid-$Id',
+            tmdbSearchUrl: '',
+            nameSearchUrl: 'https://www.opensubtitles.org/en/search2/sublanguageid-all/moviename-$Id'
+        }
+    ];
+
+    // Utility to save and load configuration
+    async function saveConfig(config) {
+        await GM.setValue('config', config);
+    }
+
+    async function loadConfig() {
+        const config = await GM.getValue('config', DEFAULT_CONFIG);
+        return config;
+    }
+
+    // Create configuration UI
+    async function showConfigUI() {
+        const config = await loadConfig();
+        const enabledSites = config.ENABLED_SITES;
+
+        const siteCheckboxes = SITES.map(site => {
+            const isChecked = enabledSites.includes(site.name) ? 'checked' : '';
+            return `
+                <label>
+                    <input type="checkbox" value="${site.name}" ${isChecked}>
+                    ${site.name}
+                </label><br>
+            `;
+        }).join('');
+
+        const html = `
+            <div>
+                <h2>Configure Enabled Sites</h2>
+                ${siteCheckboxes}
+                <button id="saveConfigBtn">Save</button>
+            </div>
+        `;
+
+        const configDiv = document.createElement('div');
+        configDiv.innerHTML = html;
+        configDiv.style.position = 'fixed';
+        configDiv.style.top = '10%';
+        configDiv.style.left = '50%';
+        configDiv.style.transform = 'translateX(-50%)';
+        configDiv.style.backgroundColor = '#272323e3';
+        configDiv.style.padding = '20px';
+        configDiv.style.border = '1px solid black';
+        configDiv.style.zIndex = '9999';
+        document.body.appendChild(configDiv);
+
+        document.getElementById('saveConfigBtn').addEventListener('click', async () => {
+            const checkboxes = configDiv.querySelectorAll('input[type="checkbox"]');
+            const newEnabledSites = Array.from(checkboxes)
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.value);
+
+            config.ENABLED_SITES = newEnabledSites;
+            await saveConfig(config);
+            alert('Configuration saved!');
+            document.body.removeChild(configDiv);
+        });
+    }
+
+    // Add menu command to open configuration UI
+    GM.registerMenuCommand('Configure Script', showConfigUI);
+
+    // Main logic
+    (async () => {
+        const config = await loadConfig();
+        const ENABLED_SITES = config.ENABLED_SITES;
+        const ICON_FONT_SIZE = config.ICON_FONT_SIZE;
+        const ICON_IMAGE_SIZE = config.ICON_IMAGE_SIZE;
+
+        const MOVIE_ONLY_SITES = ['Letterboxd', 'PassThePopcorn', 'Anthelion'];
+        const TV_ONLY_SITES = ['BroadcasTheNet', 'TV Vault'];
+
+        const SITES = [{
+            name: 'Trakt',
+            icon: 'https://simpleicons.org/icons/trakt.svg', // Use a Font Awesome icon
+            imdbSearchUrl: 'https://trakt.tv/search/imdb/$Id',
+            tmdbSearchUrl: 'https://trakt.tv/search/tmdb/$Id',
+            nameSearchUrl: 'https://trakt.tv/search?query=$Id'
+        },
+        {
+            name: 'AniList',
+            icon: 'https://simpleicons.org/icons/anilist.svg', // Use a Font Awesome icon
+            imdbSearchUrl: '', // AniList does not support IMDb
+            tmdbSearchUrl: '', // AniList does not support TMDb
+            nameSearchUrl: 'https://anilist.co/search/anime?search=$Id'
+        },
+        {
+            name: 'AniDB',
+            icon: 'https://utp.to/img/meta/anidb.svg', // Use a Font Awesome icon
+            imdbSearchUrl: '', // AniDB does not support IMDb
+            tmdbSearchUrl: '', // AniDB does not support TMDb
+            nameSearchUrl: 'https://anidb.net/search/anime/?adb.search=$Id&do.search=1'
+        }, {
+            name: 'Letterboxd',
+            icon: 'https://simpleicons.org/icons/letterboxd.svg',
+            imdbSearchUrl: 'https://letterboxd.com/imdb/$Id',
+            tmdbSearchUrl: 'https://letterboxd.com/tmdb/$Id',
+            nameSearchUrl: 'https://letterboxd.com/search/?q=$Id'
+        },
+        {
+            name: 'Rotten Tomatoes',
+            icon: 'rottentomatoes',
+            imdbSearchUrl: '',
+            tmdbSearchUrl: '',
+            nameSearchUrl: 'https://duckduckgo.com/?q=\\$Id+site%3Arottentomatoes.com'
+        },
+        {
+            name: 'PassThePopcorn',
+            icon: 'fa fa-film',
+            imdbSearchUrl: 'https://passthepopcorn.me/torrents.php?action=advanced&searchstr=$Id',
+            tmdbSearchUrl: '',
+            nameSearchUrl: 'https://passthepopcorn.me/torrents.php?action=advanced&searchstr=$Id'
+        },
+        {
+            name: 'BroadcasTheNet',
+            icon: 'fa-solid fa-power-off',
+            imdbSearchUrl: 'https://broadcasthe.net/torrents.php?action=advanced&imdb=$Id',
+            tmdbSearchUrl: '',
+            nameSearchUrl: 'https://broadcasthe.net/torrents.php?action=advanced&artistname=$Id'
+        },
+        {
+            name: 'BeyondHD',
+            icon: 'fa fa-circle-star',
+            imdbSearchUrl: 'https://beyond-hd.me/torrents?search=&doSearch=Search&imdb=$Id',
+            tmdbSearchUrl: 'https://beyond-hd.me/torrents?search=&doSearch=Search&tmdb=$Id',
+            nameSearchUrl: 'https://beyond-hd.me/torrents?search=$Id&doSearch=Search'
+        },
+        {
+            name: 'Blutopia',
+            icon: 'fa fa-rocket',
+            imdbSearchUrl: 'https://blutopia.cc/torrents?&imdbId=$Id&sortField=size',
+            tmdbSearchUrl: 'https://blutopia.cc/torrents?&tmdbId=$Id&sortField=size',
+            nameSearchUrl: 'https://blutopia.cc/torrents?&name=$Id&sortField=size'
+        },
+        {
+            name: 'Aither',
+            icon: 'fa-light fa-tv-retro',
+            imdbSearchUrl: 'https://aither.cc/torrents?&imdbId=$Id&sortField=size',
+            tmdbSearchUrl: 'https://aither.cc/torrents?&imdbId=$Id&sortField=size',
+            nameSearchUrl: 'https://aither.cc/torrents?&name=$Id&sortField=size'
+        },
+        {
+            name: 'Open Subtitles',
+            icon: 'fa-solid fa-closed-captioning',
+            imdbSearchUrl: 'https://www.opensubtitles.org/en/search/sublanguageid-all/imdbid-$Id',
+            tmdbSearchUrl: '',
+            nameSearchUrl: 'https://www.opensubtitles.org/en/search2/sublanguageid-all/moviename-$Id'
+        }
+        ];
+
+        function addLink(site, imdbId, tmdbId, mediaTitle, externalLinksUl) {
+            let searchUrl = '';
+            if (imdbId != '' && site.imdbSearchUrl != '') {
+                searchUrl = site.imdbSearchUrl.replace('$Id', imdbId);
+            } else if (tmdbId != '' && site.tmdbSearchUrl != '') {
+                searchUrl = site.tmdbSearchUrl.replace('$Id', tmdbId);
+            } else if (mediaTitle != '' && site.nameSearchUrl != '') {
+                searchUrl = site.nameSearchUrl.replace('$Id', mediaTitle);
+            }
+            if (searchUrl != '') {
+                let newLink = document.createElement('a');
+                let iconHtml = '';
+
+                if (site.icon.startsWith('http') && site.icon.endsWith('.svg')) {
+                    // If the icon is an SVG link
+                    iconHtml = `<img src="${site.icon}" alt="${site.name}" style="width:${ICON_IMAGE_SIZE}; height:${ICON_FONT_SIZE}; filter: invert(91%) sepia(6%) saturate(0%) hue-rotate(180deg) brightness(94%) contrast(88%);">`;
+                } else {
+                    // If the icon is a Font Awesome class
+                    iconHtml = `<i class="${site.icon}"></i>`;
+                }
+
+                newLink.innerHTML = `<a href="${searchUrl}" title="${site.name}" target="_blank" class="meta-id-tag">${iconHtml}<div></div></a>`;
+                externalLinksUl.appendChild(newLink);
+            }
+        }
+
+        (function () {
+            'use strict';
+            // I recommend using DecentralEyes so that stylesheets are not loaded from CloudFlare, but locally:
+            // Latest Font Awesome version to use Letterboxd's icon
+            document.head.insertAdjacentHTML('beforeend', '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" integrity="sha512-8RxmFOVaKQe/xtg6lbscU9DU0IRhURWEuiI0tXevv+lXbAHfkpamD4VKFQRto9WgfOJDwOZ74c/s9Yesv3VvIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />');
+            // The IMDB icon of the more recent Font Awesome versions is unreadable
+            document.head.insertAdjacentHTML('beforeend', '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" integrity="sha512-sVSECYdnRMezwuq5uAjKQJEcu2wybeAPjU4VJQ9pCRcCY4pIpIw4YMHIOQ0CypfwHRvdSPbH++dA3O4Hihm/LQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />');
+
+            //Style changes
+            const overriddenStyles = `
         .meta__ids {
             column-gap: 0;
         }
@@ -195,53 +302,96 @@ function addLink(site, imdbId, tmdbId, mediaTitle, externalLinksUl) {
             margin-top: 2px;
         }
     `;
-    const stylesheet = new CSSStyleSheet();
-    stylesheet.replaceSync(overriddenStyles);
-    document.adoptedStyleSheets = [stylesheet];
+            const stylesheet = new CSSStyleSheet();
+            stylesheet.replaceSync(overriddenStyles);
+            document.adoptedStyleSheets = [stylesheet];
 
-    let imdbId = '';
-    let tmdbId = '';
-    //let tvdbId = '';
-    let isMovie = '';
+            let imdbId = '';
+            let tmdbId = '';
+            //let tvdbId = '';
+            let isMovie = '';
 
-    if (document.querySelector('.meta__tmdb') != undefined) {
-        const tmdbLi = document.querySelector('.meta__tmdb');
-        tmdbId = tmdbLi.textContent.trim().split(' ').pop();
-        tmdbLi.children[0].innerHTML = '<i class="fa-solid fa-film-simple"></i>';
-        isMovie = tmdbLi.querySelector('a').href.includes('/movie');
-    }
+            if (document.querySelector('.meta__tmdb') !== null) {
+                const tmdbLi = document.querySelector('.meta__tmdb');
+                tmdbId = tmdbLi.textContent.trim().split(' ').pop();
+                isMovie = tmdbLi.querySelector('a').href.includes('/movie');
+            }
+            if (document.querySelector('.meta__imdb') !== null) {
+                const imdbLi = document.querySelector('.meta__imdb');
+                imdbId = imdbLi.children[0].href.split('/').pop();
+            }
 
-    if (document.querySelector('.meta__imdb') != undefined) {
-        const imdbLi = document.querySelector('.meta__imdb');
-        imdbId = imdbLi.children[0].href.split('/').pop();
-        imdbLi.children[0].innerHTML = '<i class="fab fa-imdb"></i>';
-    }
+            if (document.querySelector('.meta__mal') !== null) {
+                const malLi = document.querySelector('.meta__mal');
+                const malLink = malLi.children[0];
+                const malImg = malLink.querySelector('img');
 
-    if (document.querySelector('.meta__tvdb') != undefined) {
-        const tvdbLi = document.querySelector('.meta__tvdb');
-        //tvdbId = tvdbLi.textContent.trim().split(' ').pop();
-        tvdbLi.children[0].innerHTML = '<i class="fa-solid fa-tv-retro"></i>';
-    }
+                // Replace the image URL
+                if (malImg) {
+                    malImg.src = 'https://simpleicons.org/icons/myanimelist.svg';
 
-    const mediaTitle = document.querySelector('.meta__title').outerText;
+                    // Apply size and filter styles
+                    malImg.style.width = '40px';
+                    malImg.style.filter = 'invert(91%) sepia(6%) saturate(0%) hue-rotate(180deg) brightness(94%) contrast(88%)';
+                }
+            }
 
-    if (isMovie == '') {
-        isMovie = document.querySelector('main article').querySelectorAll('ul')[2].children[0].textContent.includes('Movie');
-    }
+            const mediaTitle = document.querySelector('.meta__title').outerText;
 
-    let sitesToAdd = [];
-    if (!isMovie) {
-        sitesToAdd = ENABLED_SITES.filter(site => !MOVIE_ONLY_SITES.includes(site));
-    } else {
-        sitesToAdd = ENABLED_SITES.filter(site => !TV_ONLY_SITES.includes(site));
-    }
+            if (isMovie == '') {
+                isMovie = document.querySelector('main article').querySelectorAll('ul')[2].children[0].textContent.includes('Movie');
+            }
 
-    const externalLinksUl = document.querySelector('.meta__ids');
-    const currentSiteURL = window.location.origin;
-    SITES.forEach((site) => {
-        //Only add link if site is listed as an enabled site AND the URL doesn't match the site where the script is running
-        if (sitesToAdd.includes(site.name) && new URL(site.nameSearchUrl).origin != currentSiteURL) {
-            addLink(site, imdbId, tmdbId, mediaTitle, externalLinksUl);
-        }
-    });
+            let sitesToAdd = [];
+            if (!isMovie) {
+                sitesToAdd = ENABLED_SITES.filter(site => !MOVIE_ONLY_SITES.includes(site));
+            } else {
+                sitesToAdd = ENABLED_SITES.filter(site => !TV_ONLY_SITES.includes(site));
+            }
+
+            const externalLinksUl = document.querySelector('.meta__ids');
+            const currentSiteURL = window.location.origin;
+
+            // Function to parse torrent__name and extract the title
+            function parseTorrentName(torrentName, isMovie) {
+                if (isMovie) {
+                    // Extract title until the year (assumes year is a 4-digit number)
+                    let match = torrentName.match(/^(.*?)(\s\d{4})/);
+                    return match ? match[1].trim() : torrentName;
+                } else {
+                    // Extract title before the season/series info (e.g., "S01E01", "Season 1", etc.)
+                    let match = torrentName.match(/^(.*?)(\s[Ss]\d{1,2}[Ee]\d{1,2}|\s[Ss]eason\s\d+)/);
+                    return match ? match[1].trim() : torrentName;
+                }
+            }
+
+            // Extract torrent__name from the page (example: from a specific element or metadata)
+            const torrentNameElement = document.querySelector('.torrent__name'); // Adjust this selector based on the actual structure of the page
+            const torrentName = torrentNameElement ? torrentNameElement.textContent.trim() : '';
+
+            // Determine if it's a movie or not
+            let extractedTitle = '';
+            if (torrentName) {
+                extractedTitle = parseTorrentName(torrentName, isMovie);
+            }
+
+            // Update AniList and AniDB links to use the parsed title
+            const aniListLink = SITES.find(site => site.name === 'AniList');
+            const aniDbLink = SITES.find(site => site.name === 'AniDB');
+
+            if (aniListLink && extractedTitle) {
+                aniListLink.nameSearchUrl = aniListLink.nameSearchUrl.replace('$Id', encodeURIComponent(extractedTitle));
+            }
+            if (aniDbLink && extractedTitle) {
+                aniDbLink.nameSearchUrl = aniDbLink.nameSearchUrl.replace('$Id', encodeURIComponent(extractedTitle));
+            }
+
+            SITES.forEach((site) => {
+                //Only add link if site is listed as an enabled site AND the URL doesn't match the site where the script is running
+                if (sitesToAdd.includes(site.name) && new URL(site.nameSearchUrl).origin != currentSiteURL) {
+                    addLink(site, imdbId, tmdbId, mediaTitle, externalLinksUl);
+                }
+            });
+        })();
+    })();
 })();
