@@ -1,13 +1,15 @@
 // ==UserScript==
 // @name         External Links on UNIT3D
 // @namespace    N/A
-// @version      0.5
+// @version      0.6
 // @description  Add links to other sites on the metadata section of a torrent item
 // @match        *://*/torrents/*
 // @match        *://*/requests/*
 // @grant        GM.setValue
 // @grant        GM.getValue
 // @grant        GM.registerMenuCommand
+// @updateURL    https://raw.githubusercontent.com/maksii/utp-script/main/external-links.user.js
+// @downloadURL  https://raw.githubusercontent.com/maksii/utp-script/main/external-links.user.js
 // ==/UserScript==
 
 (function () {
