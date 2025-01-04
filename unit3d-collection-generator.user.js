@@ -1,9 +1,7 @@
 // ==UserScript==
 // @name         IMDb and utp.to Movie JSON Tool
-// @namespace    http://tampermonkey.net/
 // @version      2.1
 // @description  Generate and process movie JSON from IMDb and utp.to
-// @author       Your Name
 // @match        https://www.imdb.com/*
 // @match        https://utp.to/*
 // @grant        GM_registerMenuCommand
