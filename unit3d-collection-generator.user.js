@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         UNIT3D Playlist Assistant
-// @version      2.3
+// @version      2.4
 // @description  Generate and process movie JSON from IMDb and UNIT3D
 // @match        https://www.imdb.com/*
 // @match        https://utp.to/*
@@ -563,8 +563,8 @@
               : 'N/A'; // Show "N/A" if the quality is not available
           });
 
-        // Combine IMDb link and all quality links into a table row
-        return `[tr][td]${imdbLink}[/td]${qualityLinks.map((link) => `[td]${link}[/td]`).join('')}`;
+        // Combine IMDb link and all quality links into a table row, ensuring the row ends with [/tr]
+        return `[tr][td]${imdbLink}[/td]${qualityLinks.map((link) => `[td]${link}[/td]`).join('')}[/tr]`;
       });
 
       // Generate the table header
