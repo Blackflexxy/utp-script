@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         UNIT3D Playlist Assistant
-// @version      2.2
+// @version      2.3
 // @description  Generate and process movie JSON from IMDb and UNIT3D
 // @match        https://www.imdb.com/*
 // @match        https://utp.to/*
@@ -18,6 +18,16 @@
   let uiContainer = null;
   let jsonData = [];
   let isFetching = false;
+
+  // Default Priority List
+  const defaultPriorities = [
+    { type: 'Remux', resolution: '1080p', key: 'remux1080' },
+    { type: 'Remux', resolution: '2160p', key: 'remux2160' },
+    { type: 'Encode', resolution: '2160p', key: 'encode2160' },
+    { type: 'WEB-DL', resolution: '2160p', key: 'webdl2160' },
+    { type: 'Encode', resolution: '1080p', key: 'encode1080' },
+    { type: 'WEB-DL', resolution: '1080p', key: 'webdl1080' },
+  ];
 
   // Persistent API key storage
   let apiKey = GM_getValue('utpto_api_key', ''); // Load stored API key or default to an empty string
@@ -293,15 +303,7 @@
     priorityList.style.maxHeight = '200px';
     priorityList.style.overflowY = 'auto';
 
-    // Default Priority List
-    const defaultPriorities = [
-      { type: 'Remux', resolution: '1080p', key: 'remux1080' },
-      { type: 'Remux', resolution: '2160p', key: 'remux2160' },
-      { type: 'Encode', resolution: '2160p', key: 'encode2160' },
-      { type: 'WEB-DL', resolution: '2160p', key: 'webdl2160' },
-      { type: 'Encode', resolution: '1080p', key: 'encode1080' },
-      { type: 'WEB-DL', resolution: '1080p', key: 'webdl1080' },
-    ];
+
 
     // Helper function to render priorities
     const renderPriorities = () => {
