@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         MediaInfo Parser for Release
-// @version      1.4
+// @version      1.5
 // @description  Parse MediaInfo and generate a table on /torrents/create
 // @match        *://*/torrents/create
 // @grant        none
@@ -40,13 +40,11 @@
             // Create a container for the table output
             const outputDiv = document.createElement('div');
             outputDiv.id = 'output';
-            outputDiv.style.marginTop = '20px';
 
             // Insert the file input before the textarea
             const uploadWrapper = document.createElement('div');
             uploadWrapper.style.display = 'flex';
             uploadWrapper.style.alignItems = 'center';
-            uploadWrapper.style.marginBottom = '10px';
             uploadWrapper.appendChild(fileInput);
 
             try {
@@ -177,7 +175,15 @@
             // Extract additional information for Subtitles
             function extractSubtitleInfo(lines) {
                 const commonInfo = extractCommonInfo(lines);
-                commonInfo.format = commonInfo.forced === "Yes" ? `${commonInfo.language} | Forced` : `${commonInfo.language} | Full`;
+
+                // Check for SDH in title
+                if (commonInfo.title && commonInfo.title.includes('SDH')) {
+                    commonInfo.format = `${commonInfo.language} | SDH`;
+                } else {
+                    commonInfo.format = commonInfo.forced === "Yes" ?
+                        `${commonInfo.language} | Forced` :
+                        `${commonInfo.language} | Full`;
+                }
 
                 // Append Title to Format if Title doesn't start with "Country |"
                 if (commonInfo.title && !commonInfo.title.startsWith(`${commonInfo.language} |`)) {
@@ -194,6 +200,12 @@
                 }
                 if (codec === "MLP FBA") {
                     return "TrueHD Atmos";
+                }
+                if (codec === "MLP FBA 16-ch") {
+                    return "TrueHD Atmos";
+                }
+                if (codec === "DTS XLL") {
+                    return "DTS-HD MA";
                 }
 
                 return codec; // Return unmodified if no specific formatting is needed
@@ -246,7 +258,13 @@
                     Unknown: "unknown"  // Default flag for unknown languages
                 };
 
-                const countryCode = langToCodeMap[language] || "unknown"; // Use "unknown" if language is not mapped
+                const countryCode = langToCodeMap[language] || "unknown";
+
+                // Use HDInnovations logo for unknown languages
+                if (countryCode === "unknown") {
+                    return `<img src="/vendor/joypixels/png/64/1f6a8.png" alt="?" style="width: 20px; height: 14px; margin-right: 5px; vertical-align: middle;">`;
+                }
+
                 return `<img src="/img/flags/${countryCode}.png" alt="${language}" style="width: 20px; height: 14px; margin-right: 5px; vertical-align: middle;">`;
             }
             function enableCopyOnClick() {
@@ -312,17 +330,27 @@
                     return true; // All parts match
                 }
 
+                // Add this function to convert types to icons
+                function getTypeIcon(type) {
+                    const typeIcons = {
+                        'Video': '🎬',
+                        'Audio': '🔊',
+                        'Subtitles': '💬'
+                    };
+                    return typeIcons[type] || type;
+                }
+
                 rows.forEach((row) => {
-                    const isValid = validateRow(row.title, row.format); // Validate the row
+                    const isValid = validateRow(row.title, row.format);
                     table += `
       <tr>
-        <td>${row.type}</td>
+        <td>${getTypeIcon(row.type)}</td>
         <td>${getCountryFlag(row.language)} ${row.language}</td>
         <td>${renderYesNoIcon(row.default)}</td>
         <td>${renderYesNoIcon(row.forced)}</td>
         <td>${row.title}</td>
         <td>${row.format}</td>
-        <td>${renderValidationIcon(isValid)}</td> <!-- Add validation result -->
+        <td>${renderValidationIcon(isValid)}</td>
       </tr>
     `;
                 });
