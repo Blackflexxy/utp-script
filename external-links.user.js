@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         External Links on UNIT3D
 // @namespace    N/A
-// @version      0.6
+// @version      0.7
 // @description  Add links to other sites on the metadata section of a torrent item
 // @match        *://*/torrents/*
 // @match        *://*/requests/*
@@ -19,7 +19,11 @@
     const DEFAULT_CONFIG = {
         ENABLED_SITES: ['Trakt', 'Letterboxd', 'Blutopia', 'Aither', 'Open Subtitles'],
         ICON_FONT_SIZE: '24px',
-        ICON_IMAGE_SIZE: '50px'
+        ICON_IMAGE_SIZE: '35px',
+        CUSTOM_ICON_SIZES: {
+            // Define custom sizes for specific sites
+            'AniDB': { width: '30px', height: '30px' }
+        }
     };
 
     // Sites configuration
@@ -29,35 +33,35 @@
     const SITES = [
         {
             name: 'Trakt',
-            icon: 'https://simpleicons.org/icons/trakt.svg',
+            icon: 'https://trakt.tv/assets/logos/logomark.square.gradient-b644b16c38ff775861b4b1f58c1230f6a097a2466ab33ae00445a505c33fcb91.svg',
             imdbSearchUrl: 'https://trakt.tv/search/imdb/$Id',
             tmdbSearchUrl: 'https://trakt.tv/search/tmdb/$Id',
             nameSearchUrl: 'https://trakt.tv/search?query=$Id'
         },
         {
             name: 'AniList',
-            icon: 'https://simpleicons.org/icons/anilist.svg',
+            icon: 'https://anilist.co/img/icons/icon.svg',
             imdbSearchUrl: '',
             tmdbSearchUrl: '',
             nameSearchUrl: 'https://anilist.co/search/anime?search=$Id'
         },
         {
             name: 'AniDB',
-            icon: 'https://utp.to/img/meta/anidb.svg',
+            icon: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/AniDB_apple-touch-icon.png',
             imdbSearchUrl: '',
             tmdbSearchUrl: '',
             nameSearchUrl: 'https://anidb.net/search/anime/?adb.search=$Id&do.search=1'
         },
         {
             name: 'Letterboxd',
-            icon: 'https://simpleicons.org/icons/letterboxd.svg',
+            icon: 'https://a.ltrbxd.com/logos/letterboxd-decal-dots-pos-rgb.svg',
             imdbSearchUrl: 'https://letterboxd.com/imdb/$Id',
             tmdbSearchUrl: 'https://letterboxd.com/tmdb/$Id',
             nameSearchUrl: 'https://letterboxd.com/search/?q=$Id'
         },
         {
             name: 'Rotten Tomatoes',
-            icon: 'rottentomatoes',
+            icon: 'https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg',
             imdbSearchUrl: '',
             tmdbSearchUrl: '',
             nameSearchUrl: 'https://duckduckgo.com/?q=\\$Id+site%3Arottentomatoes.com'
@@ -112,8 +116,16 @@
     }
 
     async function loadConfig() {
-        const config = await GM.getValue('config', DEFAULT_CONFIG);
-        return config;
+        const savedConfig = await GM.getValue('config', DEFAULT_CONFIG);
+        // Ensure CUSTOM_ICON_SIZES is properly merged from default config
+        return {
+            ...DEFAULT_CONFIG,
+            ...savedConfig,
+            CUSTOM_ICON_SIZES: {
+                ...DEFAULT_CONFIG.CUSTOM_ICON_SIZES,
+                ...(savedConfig.CUSTOM_ICON_SIZES || {})
+            }
+        };
     }
 
     // Create configuration UI
@@ -170,90 +182,7 @@
     // Main logic
     (async () => {
         const config = await loadConfig();
-        const ENABLED_SITES = config.ENABLED_SITES;
-        const ICON_FONT_SIZE = config.ICON_FONT_SIZE;
-        const ICON_IMAGE_SIZE = config.ICON_IMAGE_SIZE;
-
-        const MOVIE_ONLY_SITES = ['Letterboxd', 'PassThePopcorn', 'Anthelion'];
-        const TV_ONLY_SITES = ['BroadcasTheNet', 'TV Vault'];
-
-        const SITES = [{
-            name: 'Trakt',
-            icon: 'https://simpleicons.org/icons/trakt.svg', // Use a Font Awesome icon
-            imdbSearchUrl: 'https://trakt.tv/search/imdb/$Id',
-            tmdbSearchUrl: 'https://trakt.tv/search/tmdb/$Id',
-            nameSearchUrl: 'https://trakt.tv/search?query=$Id'
-        },
-        {
-            name: 'AniList',
-            icon: 'https://simpleicons.org/icons/anilist.svg', // Use a Font Awesome icon
-            imdbSearchUrl: '', // AniList does not support IMDb
-            tmdbSearchUrl: '', // AniList does not support TMDb
-            nameSearchUrl: 'https://anilist.co/search/anime?search=$Id'
-        },
-        {
-            name: 'AniDB',
-            icon: 'https://utp.to/img/meta/anidb.svg', // Use a Font Awesome icon
-            imdbSearchUrl: '', // AniDB does not support IMDb
-            tmdbSearchUrl: '', // AniDB does not support TMDb
-            nameSearchUrl: 'https://anidb.net/search/anime/?adb.search=$Id&do.search=1'
-        }, {
-            name: 'Letterboxd',
-            icon: 'https://simpleicons.org/icons/letterboxd.svg',
-            imdbSearchUrl: 'https://letterboxd.com/imdb/$Id',
-            tmdbSearchUrl: 'https://letterboxd.com/tmdb/$Id',
-            nameSearchUrl: 'https://letterboxd.com/search/?q=$Id'
-        },
-        {
-            name: 'Rotten Tomatoes',
-            icon: 'rottentomatoes',
-            imdbSearchUrl: '',
-            tmdbSearchUrl: '',
-            nameSearchUrl: 'https://duckduckgo.com/?q=\\$Id+site%3Arottentomatoes.com'
-        },
-        {
-            name: 'PassThePopcorn',
-            icon: 'fa fa-film',
-            imdbSearchUrl: 'https://passthepopcorn.me/torrents.php?action=advanced&searchstr=$Id',
-            tmdbSearchUrl: '',
-            nameSearchUrl: 'https://passthepopcorn.me/torrents.php?action=advanced&searchstr=$Id'
-        },
-        {
-            name: 'BroadcasTheNet',
-            icon: 'fa-solid fa-power-off',
-            imdbSearchUrl: 'https://broadcasthe.net/torrents.php?action=advanced&imdb=$Id',
-            tmdbSearchUrl: '',
-            nameSearchUrl: 'https://broadcasthe.net/torrents.php?action=advanced&artistname=$Id'
-        },
-        {
-            name: 'BeyondHD',
-            icon: 'fa fa-circle-star',
-            imdbSearchUrl: 'https://beyond-hd.me/torrents?search=&doSearch=Search&imdb=$Id',
-            tmdbSearchUrl: 'https://beyond-hd.me/torrents?search=&doSearch=Search&tmdb=$Id',
-            nameSearchUrl: 'https://beyond-hd.me/torrents?search=$Id&doSearch=Search'
-        },
-        {
-            name: 'Blutopia',
-            icon: 'fa fa-rocket',
-            imdbSearchUrl: 'https://blutopia.cc/torrents?&imdbId=$Id&sortField=size',
-            tmdbSearchUrl: 'https://blutopia.cc/torrents?&tmdbId=$Id&sortField=size',
-            nameSearchUrl: 'https://blutopia.cc/torrents?&name=$Id&sortField=size'
-        },
-        {
-            name: 'Aither',
-            icon: 'fa-light fa-tv-retro',
-            imdbSearchUrl: 'https://aither.cc/torrents?&imdbId=$Id&sortField=size',
-            tmdbSearchUrl: 'https://aither.cc/torrents?&imdbId=$Id&sortField=size',
-            nameSearchUrl: 'https://aither.cc/torrents?&name=$Id&sortField=size'
-        },
-        {
-            name: 'Open Subtitles',
-            icon: 'fa-solid fa-closed-captioning',
-            imdbSearchUrl: 'https://www.opensubtitles.org/en/search/sublanguageid-all/imdbid-$Id',
-            tmdbSearchUrl: '',
-            nameSearchUrl: 'https://www.opensubtitles.org/en/search2/sublanguageid-all/moviename-$Id'
-        }
-        ];
+        const { ENABLED_SITES, ICON_FONT_SIZE, ICON_IMAGE_SIZE } = config;
 
         function addLink(site, imdbId, tmdbId, mediaTitle, externalLinksUl) {
             let searchUrl = '';
@@ -267,13 +196,25 @@
             if (searchUrl != '') {
                 let newLink = document.createElement('a');
                 let iconHtml = '';
+                let image = site.icon.endsWith('.svg') || site.icon.endsWith('.png');
+                
+                // Get custom size from config if it exists
+                const customSize = config.CUSTOM_ICON_SIZES?.[site.name];
+                
+                // Set default dimensions based on icon type
+                const defaultWidth = ICON_FONT_SIZE;
+                const defaultHeight = image ? ICON_IMAGE_SIZE : ICON_FONT_SIZE;
+                
+                // Use custom size if available, otherwise fall back to defaults
+                const iconWidth = customSize?.width || defaultWidth;
+                const iconHeight = customSize?.height || defaultHeight;
 
-                if (site.icon.startsWith('http') && site.icon.endsWith('.svg')) {
+                if (site.icon.startsWith('http') && image) {
                     // If the icon is an SVG link
-                    iconHtml = `<img src="${site.icon}" alt="${site.name}" style="width:${ICON_IMAGE_SIZE}; height:${ICON_FONT_SIZE}; filter: invert(91%) sepia(6%) saturate(0%) hue-rotate(180deg) brightness(94%) contrast(88%);">`;
+                    iconHtml = `<img src="${site.icon}" alt="${site.name}" style="width:${iconWidth}; height:${iconHeight};">`;
                 } else {
                     // If the icon is a Font Awesome class
-                    iconHtml = `<i class="${site.icon}"></i>`;
+                    iconHtml = `<i class="${site.icon}" style="font-size:${iconWidth};"></i>`;
                 }
 
                 newLink.innerHTML = `<a href="${searchUrl}" title="${site.name}" target="_blank" class="meta-id-tag">${iconHtml}<div></div></a>`;
@@ -334,6 +275,7 @@
 
                     // Apply size and filter styles
                     malImg.style.width = '40px';
+                    malImg.style.height = '35px';
                     malImg.style.filter = 'invert(91%) sepia(6%) saturate(0%) hue-rotate(180deg) brightness(94%) contrast(88%)';
                 }
             }
