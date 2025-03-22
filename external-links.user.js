@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         External Links on UNIT3D
 // @namespace    N/A
-// @version      0.7
+// @version      0.8
 // @description  Add links to other sites on the metadata section of a torrent item
 // @match        *://*/torrents/*
 // @match        *://*/requests/*
@@ -102,6 +102,13 @@
             nameSearchUrl: 'https://aither.cc/torrents?&name=$Id&sortField=size'
         },
         {
+            name: 'UTP',
+            icon: 'fa-brands fa-galactic-republic',
+            imdbSearchUrl: 'https://utp.to/torrents?&imdbId=$Id&sortField=size',
+            tmdbSearchUrl: 'https://utp.totorrents?&imdbId=$Id&sortField=size',
+            nameSearchUrl: 'https://utp.to/torrents?&name=$Id&sortField=size'
+        },
+        {
             name: 'Open Subtitles',
             icon: 'fa-solid fa-closed-captioning',
             imdbSearchUrl: 'https://www.opensubtitles.org/en/search/sublanguageid-all/imdbid-$Id',
@@ -197,14 +204,14 @@
                 let newLink = document.createElement('a');
                 let iconHtml = '';
                 let image = site.icon.endsWith('.svg') || site.icon.endsWith('.png');
-                
+
                 // Get custom size from config if it exists
                 const customSize = config.CUSTOM_ICON_SIZES?.[site.name];
-                
+
                 // Set default dimensions based on icon type
                 const defaultWidth = ICON_FONT_SIZE;
                 const defaultHeight = image ? ICON_IMAGE_SIZE : ICON_FONT_SIZE;
-                
+
                 // Use custom size if available, otherwise fall back to defaults
                 const iconWidth = customSize?.width || defaultWidth;
                 const iconHeight = customSize?.height || defaultHeight;
