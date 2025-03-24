@@ -42,6 +42,10 @@ settings:
     type: checkbox
     label: Add uploader name to all titles when no release group is present to improve custom format detection by Sonarr and Radarr
     default: true
+  - name: fixtvyear
+    type: checkbox
+    label: Replace TV year with the year of the first season
+    default: true
   - name: sort
     type: select
     label: Sort requested from site
@@ -119,6 +123,10 @@ search:
       selector: num_file
     uploader:
       selector: uploader
+    release_year:
+      selector: release_year 
+    categoryname:
+      selector: category
     title:
       text: "{{ if and (.Config.single_file_release_use_filename) (eq .Result.files \"1\") (.Result.title_filename) }}{{ .Result.title_filename }}{{ else }}{{ .Result.title_optional }}{{ end }}"
       filters:
@@ -126,6 +134,10 @@ search:
           args: ["(.*?\\b(?:2160p|1080[pi]|720p|480p)\\b)(.*)", "{{ if .Config.addukrainiantotitle }}$1 UKR$2{{ else }}$1$2{{ end }}"]
         - name: re_replace
           args: ["^(?!\\s*\\[[^\\]]+\\]\\s*)(?!.*(?:-\\s*\\S+\\s*$|\\s*\\[[^\\]]+\\]\\s*$))(.+)", "{{ if .Config.addreleasegroupbyuploader }}$1-{{ .Result.uploader }}{{ else }}$1{{ end }}"]
+        - name: re_replace
+          args: ["\\b(\\d{4}(?:-\\d{4})?)\\b", "{{ if and (.Config.fixtvyear) (eq .Result.categoryname \"TV\") }}{{ .Result.release_year }}{{ else }}$1{{ end }}"]
+        - name: re_replace
+          args: ["(.*?)(S\\d+)(\\s+)(\\d{4}(?:-\\d{4})?)(.*)", "{{ if and (.Config.fixtvyear) (eq .Result.categoryname \"TV\") }}$1$4$3$2$5{{ else }}$1$2$3$4$5{{ end }}"]
         - name: replace
           args: ["BDRemux", "BluRay REMUX"]
         - name: replace
