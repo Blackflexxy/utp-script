@@ -1,0 +1,42 @@
+{
+  "name": "UA Tier 1",
+  "includeCustomFormatWhenRenaming": false,
+  "specifications": [
+    {
+      "name": "dK",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bdK\\b"
+      }
+    },
+    {
+      "name": "dK",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bdK\\b"
+      }
+    },
+    {
+      "name": "BLXY",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bBLXY\\b"
+      }
+    },
+    {
+      "name": "BLXY",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bBLXY\\b"
+      }
+    }
+  ]
+}

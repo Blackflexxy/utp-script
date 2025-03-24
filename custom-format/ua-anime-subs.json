@@ -1,0 +1,150 @@
+{
+  "name": "UA Anime Subs",
+  "includeCustomFormatWhenRenaming": false,
+  "specifications": [
+    {
+      "name": "torahetora",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\btorahetora\\b"
+      }
+    },
+    {
+      "name": "torahetora",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\btorahetora\\b"
+      }
+    },
+    {
+      "name": "SUBua",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bSUBua\\b"
+      }
+    },
+    {
+      "name": "SUBua",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bSUBua\\b"
+      }
+    },
+    {
+      "name": "UKR Subs",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bUKR Subs\\b"
+      }
+    },
+    {
+      "name": "UKR Subs",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bUKR Subs\\b"
+      }
+    },
+    {
+      "name": "Sub Ukr",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bSub Ukr\\b"
+      }
+    },
+    {
+      "name": "Sub Ukr",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bSub Ukr\\b"
+      }
+    },
+    {
+      "name": "Hoffer Subs",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bHoffer Subs\\b"
+      }
+    },
+    {
+      "name": "Hoffer Subs",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bHoffer Subs\\b"
+      }
+    },
+    {
+      "name": "SubAutumn",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bSubAutumn\\b"
+      }
+    },
+    {
+      "name": "SubAutumn",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bSubAutumn\\b"
+      }
+    },
+    {
+      "name": "Legat",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bLegat\\b"
+      }
+    },
+    {
+      "name": "Legat",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bLegat\\b"
+      }
+    },
+    {
+      "name": "UaAniSub",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bUaAniSub\\b"
+      }
+    },
+    {
+      "name": "UaAniSub",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bUaAniSub\\b"
+      }
+    }
+  ]
+}

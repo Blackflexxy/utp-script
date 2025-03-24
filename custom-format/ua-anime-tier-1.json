@@ -1,0 +1,42 @@
+{
+  "name": "UA Anime Tier 1",
+  "includeCustomFormatWhenRenaming": false,
+  "specifications": [
+    {
+      "name": "Altron320",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bAltron320\\b"
+      }
+    },
+    {
+      "name": "Altron320",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bAltron320\\b"
+      }
+    },
+    {
+      "name": "andriyo98",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bandriyo98\\b"
+      }
+    },
+    {
+      "name": "andriyo98",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bandriyo98\\b"
+      }
+    }
+  ]
+}

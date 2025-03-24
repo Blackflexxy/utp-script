@@ -1,0 +1,474 @@
+{
+  "name": "UA Tier 3",
+  "includeCustomFormatWhenRenaming": false,
+  "specifications": [
+    {
+      "name": "OldGamer",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bOldGamer\\b"
+      }
+    },
+    {
+      "name": "OldGamer",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bOldGamer\\b"
+      }
+    },
+    {
+      "name": "Spartanec",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bSpartanec\\b"
+      }
+    },
+    {
+      "name": "Spartanec",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bSpartanec\\b"
+      }
+    },
+    {
+      "name": "Hurtom",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bHurtom\\b"
+      }
+    },
+    {
+      "name": "Hurtom",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bHurtom\\b"
+      }
+    },
+    {
+      "name": "StarLord",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bStarLord\\b"
+      }
+    },
+    {
+      "name": "StarLord",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bStarLord\\b"
+      }
+    },
+    {
+      "name": "Ozz",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bOzz\\b"
+      }
+    },
+    {
+      "name": "Ozz",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bOzz\\b"
+      }
+    },
+    {
+      "name": "RenatoHD",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bRenatoHD\\b"
+      }
+    },
+    {
+      "name": "RenatoHD",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bRenatoHD\\b"
+      }
+    },
+    {
+      "name": "ShrekHD",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bShrekHD\\b"
+      }
+    },
+    {
+      "name": "ShrekHD",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bShrekHD\\b"
+      }
+    },
+    {
+      "name": "Cthulhu",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bCthulhu\\b"
+      }
+    },
+    {
+      "name": "Cthulhu",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bCthulhu\\b"
+      }
+    },
+    {
+      "name": "G1ggalo",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bG1ggalo\\b"
+      }
+    },
+    {
+      "name": "G1ggalo",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bG1ggalo\\b"
+      }
+    },
+    {
+      "name": "ZETA",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bZETA\\b"
+      }
+    },
+    {
+      "name": "ZETA",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bZETA\\b"
+      }
+    },
+    {
+      "name": "cbfm",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bcbfm\\b"
+      }
+    },
+    {
+      "name": "cbfm",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bcbfm\\b"
+      }
+    },
+    {
+      "name": "RGB",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bRGB\\b"
+      }
+    },
+    {
+      "name": "RGB",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bRGB\\b"
+      }
+    },
+    {
+      "name": "Gloft",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bGloft\\b"
+      }
+    },
+    {
+      "name": "Gloft",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bGloft\\b"
+      }
+    },
+    {
+      "name": "Lyolic",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bLyolic\\b"
+      }
+    },
+    {
+      "name": "Lyolic",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bLyolic\\b"
+      }
+    },
+    {
+      "name": "Mr. Fox",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bMr\\. Fox\\b"
+      }
+    },
+    {
+      "name": "Mr. Fox",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bMr\\. Fox\\b"
+      }
+    },
+    {
+      "name": "XuMuK",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bXuMuK\\b"
+      }
+    },
+    {
+      "name": "XuMuK",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bXuMuK\\b"
+      }
+    },
+    {
+      "name": "AAJJ",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bAAJJ\\b"
+      }
+    },
+    {
+      "name": "AAJJ",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bAAJJ\\b"
+      }
+    },
+    {
+      "name": "MayhemHD",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bMayhemHD\\b"
+      }
+    },
+    {
+      "name": "MayhemHD",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bMayhemHD\\b"
+      }
+    },
+    {
+      "name": "MAZEPA",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bMAZEPA\\b"
+      }
+    },
+    {
+      "name": "MAZEPA",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bMAZEPA\\b"
+      }
+    },
+    {
+      "name": "AlexTwitt",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bAlexTwitt\\b"
+      }
+    },
+    {
+      "name": "AlexTwitt",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bAlexTwitt\\b"
+      }
+    },
+    {
+      "name": "HANNIBAL",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bHANNIBAL\\b"
+      }
+    },
+    {
+      "name": "HANNIBAL",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bHANNIBAL\\b"
+      }
+    },
+    {
+      "name": "BaibaKo tv",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bBaibaKo tv\\b"
+      }
+    },
+    {
+      "name": "BaibaKo tv",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bBaibaKo tv\\b"
+      }
+    },
+    {
+      "name": "Bohdan237",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bBohdan237\\b"
+      }
+    },
+    {
+      "name": "Bohdan237",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bBohdan237\\b"
+      }
+    },
+    {
+      "name": "Vodnerilo",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bVodnerilo\\b"
+      }
+    },
+    {
+      "name": "Vodnerilo",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bVodnerilo\\b"
+      }
+    },
+    {
+      "name": "Цікава ідея",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bЦікава ідея\\b"
+      }
+    },
+    {
+      "name": "Цікава ідея",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bЦікава ідея\\b"
+      }
+    },
+    {
+      "name": "CikavaIdeya",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bCikavaIdeya\\b"
+      }
+    },
+    {
+      "name": "CikavaIdeya",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bCikavaIdeya\\b"
+      }
+    }
+  ]
+}
