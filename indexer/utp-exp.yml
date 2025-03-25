@@ -137,7 +137,7 @@ search:
         - name: re_replace
           args: ["\\b(\\d{4}(?:-\\d{4})?)\\b", "{{ if and (.Config.fixtvyear) (eq .Result.categoryname \"TV\") }}{{ .Result.release_year }}{{ else }}$1{{ end }}"]
         - name: re_replace
-          args: ["(.*?)(S\\d+)(\\s+)(\\d{4}(?:-\\d{4})?)(.*)", "{{ if and (.Config.fixtvyear) (eq .Result.categoryname \"TV\") }}$1$4$3$2$5{{ else }}$1$2$3$4$5{{ end }}"]
+          args: ["(.*?)(S\\d+(?:E\\d+)?)(\\s+)(\\d{4}(?:-\\d{4})?)(.*)", "{{ if and (.Config.fixtvyear) (eq .Result.categoryname \"TV\") }}$1$4$3$2$5{{ else }}$1$2$3$4$5{{ end }}"]
         - name: replace
           args: ["BDRemux", "BluRay REMUX"]
         - name: replace
