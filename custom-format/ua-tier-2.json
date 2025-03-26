@@ -289,6 +289,240 @@
       "fields": {
         "value": "(?i)\\bUtN\\b"
       }
+    },
+    {
+      "name": "banzaycs",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bbanzaycs\\b"
+      }
+    },
+    {
+      "name": "banzaycs",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bbanzaycs\\b"
+      }
+    },
+    {
+      "name": "naziksm1le",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bnaziksm1le\\b"
+      }
+    },
+    {
+      "name": "naziksm1le",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bnaziksm1le\\b"
+      }
+    },
+    {
+      "name": "GRONHOLD",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bGRONHOLD\\b"
+      }
+    },
+    {
+      "name": "GRONHOLD",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bGRONHOLD\\b"
+      }
+    },
+    {
+      "name": "legsik69",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\blegsik69\\b"
+      }
+    },
+    {
+      "name": "legsik69",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\blegsik69\\b"
+      }
+    },
+    {
+      "name": "hdmaniac",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bhdmaniac\\b"
+      }
+    },
+    {
+      "name": "hdmaniac",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bhdmaniac\\b"
+      }
+    },
+    {
+      "name": "maksii",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bmaksii\\b"
+      }
+    },
+    {
+      "name": "maksii",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bmaksii\\b"
+      }
+    },
+    {
+      "name": "Rudy_Scm",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bRudy_Scm\\b"
+      }
+    },
+    {
+      "name": "Rudy_Scm",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bRudy_Scm\\b"
+      }
+    },
+    {
+      "name": "MontyCan",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bMontyCan\\b"
+      }
+    },
+    {
+      "name": "MontyCan",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bMontyCan\\b"
+      }
+    },
+    {
+      "name": "bodiasing",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bbodiasing\\b"
+      }
+    },
+    {
+      "name": "bodiasing",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bbodiasing\\b"
+      }
+    },
+    {
+      "name": "CakesTwix",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bCakesTwix\\b"
+      }
+    },
+    {
+      "name": "CakesTwix",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bCakesTwix\\b"
+      }
+    },
+    {
+      "name": "Romario_O",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bRomario_O\\b"
+      }
+    },
+    {
+      "name": "Romario_O",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bRomario_O\\b"
+      }
+    },
+    {
+      "name": "andriy98",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bandriy98\\b"
+      }
+    },
+    {
+      "name": "andriy98",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bandriy98\\b"
+      }
+    },
+    {
+      "name": "parabola76",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bparabola76\\b"
+      }
+    },
+    {
+      "name": "parabola76",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bparabola76\\b"
+      }
     }
   ]
 }

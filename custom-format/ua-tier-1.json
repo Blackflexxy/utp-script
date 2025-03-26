@@ -37,6 +37,78 @@
       "fields": {
         "value": "(?i)\\bBLXY\\b"
       }
+    },
+    {
+      "name": "MakRa",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bMakRa\\b"
+      }
+    },
+    {
+      "name": "MakRa",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bMakRa\\b"
+      }
+    },
+    {
+      "name": "deadkiller",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bdeadkiller\\b"
+      }
+    },
+    {
+      "name": "deadkiller",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bdeadkiller\\b"
+      }
+    },
+    {
+      "name": "TaurohtaR",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bTaurohtaR\\b"
+      }
+    },
+    {
+      "name": "TaurohtaR",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bTaurohtaR\\b"
+      }
+    },
+    {
+      "name": "Blackflexxy",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bBlackflexxy\\b"
+      }
+    },
+    {
+      "name": "Blackflexxy",
+      "implementation": "ReleaseGroupSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bBlackflexxy\\b"
+      }
     }
   ]
 }
