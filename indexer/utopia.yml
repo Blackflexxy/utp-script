@@ -1,6 +1,6 @@
 ---
-id: utopia-exp
-name: UTOPIA (API)-experimental
+id: utopia
+name: UTOPIA (API)
 description: "UTOPIA is a UKRAINIAN Private Tracker for HD MOVIES and TV"
 language: uk-UA
 type: private
@@ -33,23 +33,11 @@ settings:
   - name: single_file_release_use_filename
     type: checkbox
     label: Use filename as title for single file releases
-    default: false
+    default: true
   - name: addukrainiantotitle
     type: checkbox
-    label: Add UKR to end of all titles to improve language detection by Sonarr and Radarr.
+    label: Add UKR to end of all titles to improve language detection by Sonarr and Radarr. Will cause English-only results to be misidentified.
     default: false
-  - name: usemediainfolanguages
-    type: checkbox
-    label: Use parsed mediainfo languages instead of hardcoded UKR tag
-    default: true
-  - name: addreleasegroupbyuploader
-    type: checkbox
-    label: Add uploader name to all titles when no release group is present to improve custom format detection by Sonarr and Radarr
-    default: true
-  - name: fixtvyear
-    type: checkbox
-    label: Replace TV year with the year of the first season
-    default: true
   - name: sort
     type: select
     label: Sort requested from site
@@ -125,55 +113,11 @@ search:
       optional: true
     files:
       selector: num_file
-    uploader:
-      selector: uploader
-    release_year:
-      selector: release_year 
-    categoryname:
-      selector: category
-    # New fields for language parsing
-    mediainfo:
-      selector: media_info
-    audio_languages:
-      text: "{{ if .Result.mediainfo }}{{ .Result.mediainfo }}{{ else }}{{ end }}"
-      filters:
-        - name: re_replace
-          args: ["(?s).*?Audio(?:\\s+#\\d+)?\\r?\\n.*?Language\\s+:\\s+([^\r\n]+).*", "$1"]
-        - name: prepend
-          args: "["
-        - name: append
-          args: "]"
-    subtitle_languages:
-      text: "{{ if .Result.mediainfo }}{{ .Result.mediainfo }}{{ else }}{{ end }}"
-      filters:
-        - name: re_replace
-          args: ["(?s).*?Text(?:\\s+#\\d+)?\\r?\\n.*?Language\\s+:\\s+([^\r\n]+).*", "$1"]
-        # Check if the result equals the original mediainfo by checking its length
-        # If it's longer than 50 chars, it's likely the full mediainfo was returned (no match)
-        - name: re_replace
-          args: ["(?s)^.{50,}|.*\\r\\n.*$", ""] # If longer than 50 chars, return empty string
-        # Now only if we have subtitle language text, add the wrapper
-        - name: re_replace 
-          args: ["^(.+)$", "[Subs $1]"] # This only matches non-empty strings
-    language_tags:
-      text: "{{ .Result.audio_languages }}{{ .Result.subtitle_languages }}"
     title:
       text: "{{ if and (.Config.single_file_release_use_filename) (eq .Result.files \"1\") (.Result.title_filename) }}{{ .Result.title_filename }}{{ else }}{{ .Result.title_optional }}{{ end }}"
       filters:
-        - name: re_replace
-          args: ["(.*?\\b(?:2160p|1080[pi]|720p|480p)\\b)(.*)", "{{ if .Config.addukrainiantotitle }}$1 UKR$2{{ else }}$1$2{{ end }}"]
-        - name: re_replace
-          args: ["^(?!\\s*\\[[^\\]]+\\]\\s*)(?!.*(?:-\\s*\\S+\\s*$|\\s*\\[[^\\]]+\\]\\s*$))(.+)", "{{ if .Config.addreleasegroupbyuploader }}$1-{{ .Result.uploader }}{{ else }}$1{{ end }}"]
-        - name: re_replace
-          args: ["(.*?\\b(?:2160p|1080[pi]|720p|480p)\\b)(.*)", "{{ if .Config.usemediainfolanguages }}$1 {{ .Result.language_tags }}$2{{ else }}$1$2{{ end }}"]
-        - name: re_replace
-          args: ["\\b(\\d{4}(?:-\\d{4})?)\\b", "{{ if and (.Config.fixtvyear) (eq .Result.categoryname \"TV\") }}{{ .Result.release_year }}{{ else }}$1{{ end }}"]
-        - name: re_replace
-          args: ["(.*?)(S\\d+(?:E\\d+)?)(\\s+)(\\d{4}(?:-\\d{4})?)(.*)", "{{ if and (.Config.fixtvyear) (eq .Result.categoryname \"TV\") }}$1$4$3$2$5{{ else }}$1$2$3$4$5{{ end }}"]
-        - name: replace
-          args: ["BDRemux", "BluRay REMUX"]
-        - name: replace
-          args: ["BDRip", "BluRay"]
+        - name: append
+          args: "{{ if .Config.addukrainiantotitle }} UKR{{ else }}{{ end }}"
     details:
       selector: details_link
     download:
