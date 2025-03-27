@@ -1,0 +1,24 @@
+{
+  "name": "UA Language Audio",
+  "includeCustomFormatWhenRenaming": false,
+  "specifications": [
+    {
+      "name": "[Ukrainian] tag",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\[(?!\\s*Subs)[^]]*\\b(Ukrainian)\\b[^]]*\\]"
+      }
+    },
+    {
+      "name": "UKR tag",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)^(?:(?!\\|).)*?(?:\\d+x)?(UKR)(?![\\s/_-]*(?:SUB\\b))"
+      }
+    }
+  ]
+}

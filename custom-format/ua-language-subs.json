@@ -1,0 +1,60 @@
+{
+  "name": "UA Language Subs",
+  "includeCustomFormatWhenRenaming": false,
+  "specifications": [
+    {
+      "name": "Subs Ukrainian",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bSubs Ukrainian\\b"
+      }
+    },
+    {
+      "name": "UKR SUB",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bUKR SUB\\b"
+      }
+    },
+    {
+      "name": "SUB UKR",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bSUB UKR\\b"
+      }
+    },
+    {
+      "name": "Sub/Ukr",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bSub/Ukr\\b"
+      }
+    },
+    {
+      "name": "Subs xUkr",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)\\bsub\\s+(\\d+)\\s*x\\s*ukr\\b"
+      }
+    },
+    {
+      "name": "UKR DVO SUB",
+      "implementation": "ReleaseTitleSpecification",
+      "negate": false,
+      "required": false,
+      "fields": {
+        "value": "(?i)(?<=UKR\\s+\\w{3}\\s+)SUB\\b"
+      }
+    }
+  ]
+}

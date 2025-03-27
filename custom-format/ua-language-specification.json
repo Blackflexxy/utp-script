@@ -1,0 +1,16 @@
+{
+  "name": "UA Language Specification",
+  "includeCustomFormatWhenRenaming": false,
+  "specifications": [
+    {
+      "name": "Ukrainian Language",
+      "implementation": "LanguageSpecification",
+      "negate": false,
+      "required": true,
+      "fields": {
+        "value": 32,
+        "exceptLanguage": false
+      }
+    }
+  ]
+}
