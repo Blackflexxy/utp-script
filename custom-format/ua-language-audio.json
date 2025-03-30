@@ -3,6 +3,16 @@
   "includeCustomFormatWhenRenaming": false,
   "specifications": [
     {
+      "name": "Ukrainian Language",
+      "implementation": "LanguageSpecification",
+      "negate": false,
+      "required": true,
+      "fields": {
+        "value": 32,
+        "exceptLanguage": false
+      }
+    },
+    {
       "name": "[Ukrainian] tag",
       "implementation": "ReleaseTitleSpecification",
       "negate": false,
