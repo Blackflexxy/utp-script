@@ -137,11 +137,15 @@ search:
       text: "{{ if .Result.mediainfo }}{{ .Result.mediainfo }}{{ else }}{{ end }}"
       filters:
         - name: re_replace
-          args: ["(?s).*?Audio(?:\\s+#\\d+)?\\r?\\n.*?Language\\s+:\\s+([^\r\n]+).*", "$1"]
+          args: ["(?s).*?(Audio(?:\\s+#\\d+)?\\r?\\n.*?Language\\s+:\\s+([^\r\n]+).*?)", "[$2]"] # Extract language from mediainfo
         - name: re_replace
-          args: ["(?s)^.{50,}|.*\\r\\n.*$", ""]
-        - name: re_replace 
-          args: ["^(.+)$", "[$1]"]
+          args: ["\\s*[^\\[\\]]+(?:\\[[^\\[\\]]*\\][^\\[\\]]*)*$", ""] # Remove any text after the last language tag
+        - name: re_replace
+          args: ["\\s\\([A-Z]{2}\\)", ""] # Remove language code from the end of the string
+        - name: re_replace
+          args: ["\\[(.*?)\\](?=.*\\[\\1\\])", ""] # Remove any duplicate language tags
+        - name: re_replace
+          args: ["\\]\\[", "+"] # Replace ][ with a +
     subtitle_languages:
       text: "{{ if .Result.mediainfo }}{{ .Result.mediainfo }}{{ else }}{{ end }}"
       filters:
