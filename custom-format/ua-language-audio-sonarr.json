@@ -8,7 +8,7 @@
       "negate": false,
       "required": false,
       "fields": {
-        "value": 32,
+        "value": 30,
         "exceptLanguage": false
       }
     },
