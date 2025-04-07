@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         External Links on UNIT3D
 // @namespace    N/A
-// @version      0.8
+// @version      0.9
 // @description  Add links to other sites on the metadata section of a torrent item
 // @match        *://*/torrents/*
 // @match        *://*/requests/*
 // @grant        GM.setValue
 // @grant        GM.getValue
 // @grant        GM.registerMenuCommand
+// @grant        GM.xmlHttpRequest
 // @updateURL    https://raw.githubusercontent.com/maksii/utp-script/main/external-links.user.js
 // @downloadURL  https://raw.githubusercontent.com/maksii/utp-script/main/external-links.user.js
 // ==/UserScript==
@@ -17,7 +18,7 @@
 
     // Default configuration
     const DEFAULT_CONFIG = {
-        ENABLED_SITES: ['Trakt', 'Letterboxd', 'Blutopia', 'Aither', 'Open Subtitles'],
+        ENABLED_SITES: ['KinoBaza', 'Trakt', 'Letterboxd', 'Blutopia', 'Aither', 'Open Subtitles'],
         ICON_FONT_SIZE: '24px',
         ICON_IMAGE_SIZE: '35px',
         CUSTOM_ICON_SIZES: {
@@ -31,6 +32,13 @@
     const TV_ONLY_SITES = ['BroadcasTheNet', 'TV Vault'];
 
     const SITES = [
+        {
+            name: 'KinoBaza',
+            icon: 'https://kinobaza.com.ua/assets/img/kinobazav4.svg',
+            imdbSearchUrl: 'https://kinobaza.com.ua/api/external?q=https://www.imdb.com/title/$Id',
+            tmdbSearchUrl: 'https://kinobaza.com.ua/api/external?q=https://www.themoviedb.org/tv/$Id',
+            nameSearchUrl: ''
+        },
         {
             name: 'Trakt',
             icon: 'https://trakt.tv/assets/logos/logomark.square.gradient-b644b16c38ff775861b4b1f58c1230f6a097a2466ab33ae00445a505c33fcb91.svg',
@@ -201,33 +209,48 @@
                 searchUrl = site.nameSearchUrl.replace('$Id', mediaTitle);
             }
             if (searchUrl != '') {
-                let newLink = document.createElement('a');
-                let iconHtml = '';
-                let image = site.icon.endsWith('.svg') || site.icon.endsWith('.png');
+                // Special handling for KinoBaza
+                if (site.name === 'KinoBaza') {
+                    GM.xmlHttpRequest({
+                        method: "GET",
+                        url: searchUrl,
+                        responseType: "json",
+                        onload: function (response) {
+                            if (response.response && response.response.url) {
+                                createExternalLink(response.response.url, site, externalLinksUl);
+                            }
+                        },
+                        onerror: function (err) {
+                            console.error("KinoBaza fetch failed:", err);
+                        }
+                    });
 
-                // Get custom size from config if it exists
-                const customSize = config.CUSTOM_ICON_SIZES?.[site.name];
-
-                // Set default dimensions based on icon type
-                const defaultWidth = ICON_FONT_SIZE;
-                const defaultHeight = image ? ICON_IMAGE_SIZE : ICON_FONT_SIZE;
-
-                // Use custom size if available, otherwise fall back to defaults
-                const iconWidth = customSize?.width || defaultWidth;
-                const iconHeight = customSize?.height || defaultHeight;
-
-                if (site.icon.startsWith('http') && image) {
-                    // If the icon is an SVG link
-                    iconHtml = `<img src="${site.icon}" alt="${site.name}" style="width:${iconWidth}; height:${iconHeight};">`;
-                } else {
-                    // If the icon is a Font Awesome class
-                    iconHtml = `<i class="${site.icon}" style="font-size:${iconWidth};"></i>`;
+                    return;
                 }
 
-                newLink.innerHTML = `<a href="${searchUrl}" title="${site.name}" target="_blank" class="meta-id-tag">${iconHtml}<div></div></a>`;
-                externalLinksUl.appendChild(newLink);
+                createExternalLink(searchUrl, site, externalLinksUl);
             }
         }
+
+        function createExternalLink(url, site, externalLinksUl) {
+            let newLink = document.createElement('a');
+            let iconHtml = '';
+            let image = site.icon.endsWith('.svg') || site.icon.endsWith('.png');
+
+            const customSize = config.CUSTOM_ICON_SIZES?.[site.name];
+            const iconWidth = customSize?.width || config.ICON_FONT_SIZE;
+            const iconHeight = customSize?.height || (image ? config.ICON_IMAGE_SIZE : config.ICON_FONT_SIZE);
+
+            if (site.icon.startsWith('http') && image) {
+                iconHtml = `<img src="${site.icon}" alt="${site.name}" style="width:${iconWidth}; height:${iconHeight};">`;
+            } else {
+                iconHtml = `<i class="${site.icon}" style="font-size:${iconWidth};"></i>`;
+            }
+
+            newLink.innerHTML = `<a href="${url}" title="${site.name}" target="_blank" class="meta-id-tag">${iconHtml}<div></div></a>`;
+            externalLinksUl.appendChild(newLink);
+        }
+
 
         (function () {
             'use strict';
@@ -339,9 +362,13 @@
 
             SITES.forEach((site) => {
                 //Only add link if site is listed as an enabled site AND the URL doesn't match the site where the script is running
-                if (sitesToAdd.includes(site.name) && new URL(site.nameSearchUrl).origin != currentSiteURL) {
+                if (
+                    sitesToAdd.includes(site.name) &&
+                    (!site.nameSearchUrl || new URL(site.nameSearchUrl).origin !== currentSiteURL)
+                ) {
                     addLink(site, imdbId, tmdbId, mediaTitle, externalLinksUl);
                 }
+
             });
         })();
     })();
