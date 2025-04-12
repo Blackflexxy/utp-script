@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         External Links on UNIT3D
 // @namespace    N/A
-// @version      0.9
+// @version      0.9.1
 // @description  Add links to other sites on the metadata section of a torrent item
 // @match        *://*/torrents/*
 // @match        *://*/requests/*
@@ -312,7 +312,7 @@
 
             const mediaTitle = document.querySelector('.meta__title').outerText;
 
-            if (isMovie == '') {
+            if (isMovie === '') {
                 isMovie = document.querySelector('main article').querySelectorAll('ul')[2].children[0].textContent.includes('Movie');
             }
 
