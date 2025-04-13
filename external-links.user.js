@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         External Links on UNIT3D
 // @namespace    N/A
-// @version      0.9.2
+// @version      0.9.6
 // @description  Add links to other sites on the metadata section of a torrent item
 // @match        *://*/torrents/*
 // @match        *://*/requests/*
@@ -32,6 +32,19 @@
       // Define custom sizes for specific sites
       AniDB: { width: "30px", height: "30px" },
     },
+    API_KEYS: {
+      // Store API keys for sites by type
+      // "Blutopia": "your-api-key",
+      // "Aither": "your-api-key",
+    },
+    SHOW_RELEASE_COUNT: true, // Toggle to show/hide release count badges
+  };
+
+  // Site Types
+  const SITE_TYPES = {
+    UNIT3D: "UNIT3D",
+    STANDARD: "standard",
+    // Can add more types here in the future
   };
 
   // Sites configuration
@@ -47,6 +60,7 @@
       tmdbSearchUrl:
         "https://kinobaza.com.ua/api/external?q=https://www.themoviedb.org/tv/$Id",
       nameSearchUrl: "",
+      type: SITE_TYPES.STANDARD,
     },
     {
       name: "Trakt",
@@ -54,6 +68,7 @@
       imdbSearchUrl: "https://trakt.tv/search/imdb/$Id",
       tmdbSearchUrl: "https://trakt.tv/search/tmdb/$Id",
       nameSearchUrl: "https://trakt.tv/search?query=$Id",
+      type: SITE_TYPES.STANDARD,
     },
     {
       name: "AniList",
@@ -61,6 +76,7 @@
       imdbSearchUrl: "",
       tmdbSearchUrl: "",
       nameSearchUrl: "https://anilist.co/search/anime?search=$Id",
+      type: SITE_TYPES.STANDARD,
     },
     {
       name: "AniDB",
@@ -69,6 +85,7 @@
       tmdbSearchUrl: "",
       nameSearchUrl:
         "https://anidb.net/search/anime/?adb.search=$Id&do.search=1",
+      type: SITE_TYPES.STANDARD,
     },
     {
       name: "Letterboxd",
@@ -76,6 +93,7 @@
       imdbSearchUrl: "https://letterboxd.com/imdb/$Id",
       tmdbSearchUrl: "https://letterboxd.com/tmdb/$Id",
       nameSearchUrl: "https://letterboxd.com/search/?q=$Id",
+      type: SITE_TYPES.STANDARD,
     },
     {
       name: "Rotten Tomatoes",
@@ -84,6 +102,7 @@
       tmdbSearchUrl: "",
       nameSearchUrl:
         "https://duckduckgo.com/?q=\\$Id+site%3Arottentomatoes.com",
+      type: SITE_TYPES.STANDARD,
     },
     {
       name: "PassThePopcorn",
@@ -93,6 +112,7 @@
       tmdbSearchUrl: "",
       nameSearchUrl:
         "https://passthepopcorn.me/torrents.php?action=advanced&searchstr=$Id",
+      type: SITE_TYPES.STANDARD,
     },
     {
       name: "BroadcasTheNet",
@@ -102,6 +122,7 @@
       tmdbSearchUrl: "",
       nameSearchUrl:
         "https://broadcasthe.net/torrents.php?action=advanced&artistname=$Id",
+      type: SITE_TYPES.STANDARD,
     },
     {
       name: "BeyondHD",
@@ -111,6 +132,7 @@
       tmdbSearchUrl:
         "https://beyond-hd.me/torrents?search=&doSearch=Search&tmdb=$Id",
       nameSearchUrl: "https://beyond-hd.me/torrents?search=$Id&doSearch=Search",
+      type: SITE_TYPES.STANDARD,
     },
     {
       name: "Blutopia",
@@ -118,6 +140,7 @@
       imdbSearchUrl: "https://blutopia.cc/torrents?&imdbId=$Id&sortField=size",
       tmdbSearchUrl: "https://blutopia.cc/torrents?&tmdbId=$Id&sortField=size",
       nameSearchUrl: "https://blutopia.cc/torrents?&name=$Id&sortField=size",
+      type: SITE_TYPES.UNIT3D,
     },
     {
       name: "Aither",
@@ -125,6 +148,7 @@
       imdbSearchUrl: "https://aither.cc/torrents?&imdbId=$Id&sortField=size",
       tmdbSearchUrl: "https://aither.cc/torrents?&tmdbId=$Id&sortField=size",
       nameSearchUrl: "https://aither.cc/torrents?&name=$Id&sortField=size",
+      type: SITE_TYPES.UNIT3D,
     },
     {
       name: "UTP",
@@ -132,6 +156,7 @@
       imdbSearchUrl: "https://utp.to/torrents?&imdbId=$Id&sortField=size",
       tmdbSearchUrl: "https://utp.totorrents?&tmdbId=$Id&sortField=size",
       nameSearchUrl: "https://utp.to/torrents?&name=$Id&sortField=size",
+      type: SITE_TYPES.UNIT3D,
     },
     {
       name: "Open Subtitles",
@@ -141,6 +166,7 @@
       tmdbSearchUrl: "",
       nameSearchUrl:
         "https://www.opensubtitles.org/en/search2/sublanguageid-all/moviename-$Id",
+      type: SITE_TYPES.STANDARD,
     },
     {
       name: "Upload.cx",
@@ -148,6 +174,7 @@
       imdbSearchUrl: "https://upload.cx/torrents?imdbId=$Id",
       tmdbSearchUrl: "https://upload.cx/torrents?tmdbId=$Id",
       nameSearchUrl: "https://upload.cx/torrents?name=$Id",
+      type: SITE_TYPES.UNIT3D,
     },
     {
       name: "LST.gg",
@@ -155,6 +182,7 @@
       imdbSearchUrl: "https://lst.gg/torrents?imdbId=$Id",
       tmdbSearchUrl: "https://lst.gg/torrents?tmdbId=$Id",
       nameSearchUrl: "https://lst.gg/torrents?name=$Id",
+      type: SITE_TYPES.UNIT3D,
     },
     {
       name: "FearNoPeer",
@@ -162,6 +190,7 @@
       imdbSearchUrl: "https://fearnopeer.com/torrents?imdbId=$Id",
       tmdbSearchUrl: "https://fearnopeer.com/torrents?tmdbId=$Id",
       nameSearchUrl: "https://fearnopeer.com/torrents?name=$Id",
+      type: SITE_TYPES.UNIT3D,
     },
     {
       name: "OldToons",
@@ -169,6 +198,7 @@
       imdbSearchUrl: "https://oldtoons.world/torrents?imdbId=$Id",
       tmdbSearchUrl: "https://oldtoons.world/torrents?tmdbId=$Id",
       nameSearchUrl: "https://oldtoons.world/torrents?name=$Id",
+      type: SITE_TYPES.UNIT3D,
     },
     {
       name: "OnlyEncodes",
@@ -176,6 +206,7 @@
       imdbSearchUrl: "https://onlyencodes.cc/torrents?imdbId=$Id",
       tmdbSearchUrl: "https://onlyencodes.cc/torrents?tmdbId=$Id",
       nameSearchUrl: "https://onlyencodes.cc/torrents?name=$Id",
+      type: SITE_TYPES.UNIT3D,
     },
     {
       name: "ReelFlix",
@@ -183,6 +214,7 @@
       imdbSearchUrl: "https://reelflix.xyz/torrents?imdbId=$Id",
       tmdbSearchUrl: "https://reelflix.xyz/torrents?tmdbId=$Id",
       nameSearchUrl: "https://reelflix.xyz/torrents?name=$Id",
+      type: SITE_TYPES.UNIT3D,
     },
     {
       name: "UNO",
@@ -190,6 +222,7 @@
       imdbSearchUrl: "https://hawke.uno/torrents?imdbId=$Id",
       tmdbSearchUrl: "https://hawke.uno/torrents?tmdbId=$Id",
       nameSearchUrl: "https://hawke.uno/torrents?name=$Id",
+      type: SITE_TYPES.UNIT3D,
     },
   ];
 
@@ -200,13 +233,17 @@
 
   async function loadConfig() {
     const savedConfig = await GM.getValue("config", DEFAULT_CONFIG);
-    // Ensure CUSTOM_ICON_SIZES is properly merged from default config
+    // Ensure CUSTOM_ICON_SIZES and API_KEYS are properly merged from default config
     return {
       ...DEFAULT_CONFIG,
       ...savedConfig,
       CUSTOM_ICON_SIZES: {
         ...DEFAULT_CONFIG.CUSTOM_ICON_SIZES,
         ...(savedConfig.CUSTOM_ICON_SIZES || {}),
+      },
+      API_KEYS: {
+        ...DEFAULT_CONFIG.API_KEYS,
+        ...(savedConfig.API_KEYS || {}),
       },
     };
   }
@@ -215,24 +252,53 @@
   async function showConfigUI() {
     const config = await loadConfig();
     const enabledSites = config.ENABLED_SITES;
+    const apiKeys = config.API_KEYS || {};
 
+    // Group sites by type for better organization
+    const sitesByType = SITES.reduce((acc, site) => {
+      const type = site.type || SITE_TYPES.STANDARD;
+      if (!acc[type]) acc[type] = [];
+      acc[type].push(site);
+      return acc;
+    }, {});
+
+    // Create UI for site checkboxes and API keys
     const siteCheckboxes = SITES.map((site) => {
       const isChecked = enabledSites.includes(site.name) ? "checked" : "";
+
+      // If it's a UNIT3D site, add an API key input field
+      const apiKeyInput = site.type === SITE_TYPES.UNIT3D ?
+        `<br><input type="text" placeholder="API Key" value="${apiKeys[site.name] || ''}" class="apiKey" data-site="${site.name}">` :
+        '';
+
       return `
-                <label>
-                    <input type="checkbox" value="${site.name}" ${isChecked}>
-                    ${site.name}
-                </label><br>
-            `;
+        <div>
+          <label>
+            <input type="checkbox" value="${site.name}" ${isChecked}>
+            ${site.name}${site.type !== SITE_TYPES.STANDARD ? ` (${site.type})` : ""}
+          </label>
+          ${apiKeyInput}
+        </div>
+      `;
     }).join("");
 
+    // Add toggle for showing release count badges
+    const showReleaseCount = config.SHOW_RELEASE_COUNT !== false ? "checked" : "";
+
     const html = `
-            <div>
-                <h2>Configure Enabled Sites</h2>
-                ${siteCheckboxes}
-                <button id="saveConfigBtn">Save</button>
-            </div>
-        `;
+      <div>
+        <h2>Configure Enabled Sites</h2>
+        <p>For UNIT3D sites, provide API keys to check for available releases.</p>
+        <div style="margin-bottom: 15px;">
+          <label>
+            <input type="checkbox" id="showReleaseCount" ${showReleaseCount}>
+            Show release count badges
+          </label>
+        </div>
+        ${siteCheckboxes}
+        <button id="saveConfigBtn">Save</button>
+      </div>
+    `;
 
     const configDiv = document.createElement("div");
     configDiv.innerHTML = html;
@@ -244,17 +310,38 @@
     configDiv.style.padding = "20px";
     configDiv.style.border = "1px solid black";
     configDiv.style.zIndex = "9999";
+    configDiv.style.maxHeight = "80%";
+    configDiv.style.overflowY = "auto";
     document.body.appendChild(configDiv);
 
     document
       .getElementById("saveConfigBtn")
       .addEventListener("click", async () => {
-        const checkboxes = configDiv.querySelectorAll('input[type="checkbox"]');
+        const checkboxes = configDiv.querySelectorAll('input[type="checkbox"]:not(#showReleaseCount)');
         const newEnabledSites = Array.from(checkboxes)
           .filter((checkbox) => checkbox.checked)
           .map((checkbox) => checkbox.value);
 
+        // Collect API keys
+        const apiKeyInputs = configDiv.querySelectorAll('input.apiKey');
+        const newApiKeys = {};
+
+        apiKeyInputs.forEach(input => {
+          const site = input.getAttribute('data-site');
+          const value = input.value.trim();
+
+          if (value) {
+            newApiKeys[site] = value;
+          }
+        });
+
+        // Get show release count setting
+        const showReleaseCount = document.getElementById('showReleaseCount').checked;
+
         config.ENABLED_SITES = newEnabledSites;
+        config.API_KEYS = newApiKeys;
+        config.SHOW_RELEASE_COUNT = showReleaseCount;
+
         await saveConfig(config);
         alert("Configuration saved!");
         document.body.removeChild(configDiv);
@@ -267,47 +354,74 @@
   // Main logic
   (async () => {
     const config = await loadConfig();
-    const { ENABLED_SITES, ICON_FONT_SIZE, ICON_IMAGE_SIZE } = config;
+    const { ENABLED_SITES, ICON_FONT_SIZE, ICON_IMAGE_SIZE, API_KEYS, SHOW_RELEASE_COUNT } = config;
 
-    function addLink(site, imdbId, tmdbId, mediaTitle, externalLinksUl) {
-      let searchUrl = "";
-      if (imdbId != "" && site.imdbSearchUrl != "") {
-        searchUrl = site.imdbSearchUrl.replace("$Id", imdbId);
-      } else if (tmdbId != "" && site.tmdbSearchUrl != "") {
-        searchUrl = site.tmdbSearchUrl.replace("$Id", tmdbId);
-      } else if (mediaTitle != "" && site.nameSearchUrl != "") {
-        searchUrl = site.nameSearchUrl.replace("$Id", mediaTitle);
-      }
-      if (searchUrl != "") {
-        // Special handling for KinoBaza
-        if (site.name === "KinoBaza") {
-          GM.xmlHttpRequest({
-            method: "GET",
-            url: searchUrl,
-            responseType: "json",
-            onload: function (response) {
-              if (response.response && response.response.url) {
-                createExternalLink(
-                  response.response.url,
-                  site,
-                  externalLinksUl
-                );
-              }
-            },
-            onerror: function (err) {
-              console.error("KinoBaza fetch failed:", err);
-            },
-          });
-
-          return;
+    // Check for releases via API based on site type
+    async function checkReleasesViaApi(site, imdbId, tmdbId) {
+      return new Promise((resolve) => {
+        // Handle different site types
+        if (site.type === SITE_TYPES.UNIT3D) {
+          return checkUnit3dReleases(site, imdbId, tmdbId, resolve);
         }
 
-        createExternalLink(searchUrl, site, externalLinksUl);
-      }
+        // Default behavior for unknown site types or those without API implementation
+        resolve({ hasReleases: true, count: 0 });
+      });
     }
 
-    function createExternalLink(url, site, externalLinksUl) {
-      let newLink = document.createElement("a");
+    // Check specifically for UNIT3D releases
+    function checkUnit3dReleases(site, imdbId, tmdbId, resolve) {
+      // Skip the check if no API key is available
+      if (!API_KEYS[site.name]) {
+        resolve({ hasReleases: true, count: 0 }); // Default to showing the link if no API key
+        return;
+      }
+
+      const baseUrl = new URL(site.imdbSearchUrl.replace('$Id', '')).origin;
+      let apiUrl = `${baseUrl}/api/torrents/filter?`;
+
+      // Add appropriate parameter based on available IDs
+      if (tmdbId) {
+        apiUrl += `tmdbId=${tmdbId}`;
+      } else if (imdbId) {
+        apiUrl += `imdbId=${imdbId}`;
+      } else {
+        resolve({ hasReleases: true, count: 0 }); // Default to showing if no IDs available
+        return;
+      }
+
+      GM.xmlHttpRequest({
+        method: "GET",
+        url: apiUrl,
+        headers: {
+          'Authorization': `Bearer ${API_KEYS[site.name]}`,
+          'Accept': 'application/json',
+        },
+        responseType: "json",
+        onload: function (response) {
+          if (response.status === 200 && response.response) {
+            const data = response.response;
+            // Check if any torrents are found and get the count
+            const releaseCount = data.data ? data.data.length : 0;
+            resolve({
+              hasReleases: releaseCount > 0,
+              count: releaseCount
+            });
+          } else {
+            console.error(`API request failed for ${site.name}:`, response);
+            resolve({ hasReleases: true, count: 0 }); // Default to showing on error
+          }
+        },
+        onerror: function (err) {
+          console.error(`API request error for ${site.name}:`, err);
+          resolve({ hasReleases: true, count: 0 }); // Default to showing on error
+        }
+      });
+    }
+
+    // Function to create an external link element
+    function createExternalLink(url, site, releaseCount) {
+      let linkElement = document.createElement("a");
       let iconHtml = "";
       let image = site.icon.endsWith(".svg") || site.icon.endsWith(".png");
 
@@ -317,14 +431,92 @@
         customSize?.height ||
         (image ? config.ICON_IMAGE_SIZE : config.ICON_FONT_SIZE);
 
-      if (site.icon.startsWith("http") && image) {
-        iconHtml = `<img src="${site.icon}" alt="${site.name}" style="width:${iconWidth}; height:${iconHeight};">`;
-      } else {
-        iconHtml = `<i class="${site.icon}" style="font-size:${iconWidth};"></i>`;
+      let badgeHtml = "";
+      if (SHOW_RELEASE_COUNT && releaseCount > 0) {
+        badgeHtml = `<span class="release-count-badge">${releaseCount}</span>`;
       }
 
-      newLink.innerHTML = `<a href="${url}" title="${site.name}" target="_blank" class="meta-id-tag">${iconHtml}<div></div></a>`;
-      externalLinksUl.appendChild(newLink);
+      if (site.icon.startsWith("http") && image) {
+        iconHtml = `
+          <div class="icon-container">
+            <img src="${site.icon}" alt="${site.name}" style="width:${iconWidth}; height:${iconHeight};">
+            ${badgeHtml}
+          </div>`;
+      } else {
+        iconHtml = `
+          <div class="icon-container">
+            <i class="${site.icon}" style="font-size:${iconWidth};"></i>
+            ${badgeHtml}
+          </div>`;
+      }
+
+      linkElement.innerHTML = `<a href="${url}" title="${site.name}" target="_blank" class="meta-id-tag">${iconHtml}<div></div></a>`;
+      return linkElement;
+    }
+
+    // New function to handle link preparation and collection
+    async function prepareLink(site, imdbId, tmdbId, mediaTitle) {
+      let searchUrl = "";
+      if (imdbId != "" && site.imdbSearchUrl != "") {
+        searchUrl = site.imdbSearchUrl.replace("$Id", imdbId);
+      } else if (tmdbId != "" && site.tmdbSearchUrl != "") {
+        searchUrl = site.tmdbSearchUrl.replace("$Id", tmdbId);
+      } else if (mediaTitle != "" && site.nameSearchUrl != "") {
+        searchUrl = site.nameSearchUrl.replace("$Id", mediaTitle);
+      }
+
+      if (searchUrl === "") {
+        return null; // No valid URL, skip this site
+      }
+
+      // Special handling for KinoBaza
+      if (site.name === "KinoBaza") {
+        try {
+          const response = await new Promise((resolve, reject) => {
+            GM.xmlHttpRequest({
+              method: "GET",
+              url: searchUrl,
+              responseType: "json",
+              onload: resolve,
+              onerror: reject
+            });
+          });
+          
+          if (response.response && response.response.url) {
+            return {
+              site: site,
+              url: response.response.url,
+              count: 0
+            };
+          }
+          return null;
+        } catch (err) {
+          console.error("KinoBaza fetch failed:", err);
+          return null;
+        }
+      }
+
+      // Check for releases on sites with API support if API key is available
+      if (site.type !== SITE_TYPES.STANDARD && API_KEYS[site.name]) {
+        const result = await checkReleasesViaApi(site, imdbId, tmdbId);
+        if (result.hasReleases) {
+          return {
+            site: site,
+            url: searchUrl,
+            count: result.count
+          };
+        } else {
+          console.log(`No releases found on ${site.name}, hiding link`);
+          return null;
+        }
+      } else {
+        // For sites without API support or without API keys, include link as usual
+        return {
+          site: site,
+          url: searchUrl,
+          count: 0
+        };
+      }
     }
 
     (function () {
@@ -355,6 +547,29 @@
         .meta__description {
             margin-top: 2px;
         }
+
+        .icon-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .release-count-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 50%;
+            font-size: 12px;
+            min-width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            padding: 0 4px;
+            box-shadow: 0 0 3px rgba(0,0,0,0.3);
+        }
     `;
       const stylesheet = new CSSStyleSheet();
       stylesheet.replaceSync(overriddenStyles);
@@ -367,8 +582,10 @@
 
       if (document.querySelector(".meta__tmdb") !== null) {
         const tmdbLi = document.querySelector(".meta__tmdb");
-        tmdbId = tmdbLi.textContent.trim().split(" ").pop();
-        isMovie = tmdbLi.querySelector("a").href.includes("/movie");
+        const url = tmdbLi.querySelector("a").href;
+        const id = url.match(/\/(\d+)$/)[1];
+        tmdbId = id;
+        isMovie = url.includes("/movie");
       }
       if (document.querySelector(".meta__imdb") !== null) {
         const imdbLi = document.querySelector(".meta__imdb");
@@ -403,20 +620,6 @@
           .children[0].textContent.includes("Movie");
       }
 
-      let sitesToAdd = [];
-      if (!isMovie) {
-        sitesToAdd = ENABLED_SITES.filter(
-          (site) => !MOVIE_ONLY_SITES.includes(site)
-        );
-      } else {
-        sitesToAdd = ENABLED_SITES.filter(
-          (site) => !TV_ONLY_SITES.includes(site)
-        );
-      }
-
-      const externalLinksUl = document.querySelector(".meta__ids");
-      const currentSiteURL = window.location.origin;
-
       // Function to parse torrent__name and extract the title
       function parseTorrentName(torrentName, isMovie) {
         if (isMovie) {
@@ -432,7 +635,7 @@
         }
       }
 
-      // Extract torrent__name from the page (example: from a specific element or metadata)
+      // Extract torrent__name from the page
       const torrentNameElement = document.querySelector(".torrent__name"); // Adjust this selector based on the actual structure of the page
       const torrentName = torrentNameElement
         ? torrentNameElement.textContent.trim()
@@ -461,16 +664,67 @@
         );
       }
 
-      SITES.forEach((site) => {
-        //Only add link if site is listed as an enabled site AND the URL doesn't match the site where the script is running
-        if (
-          sitesToAdd.includes(site.name) &&
-          (!site.nameSearchUrl ||
-            new URL(site.nameSearchUrl).origin !== currentSiteURL)
-        ) {
-          addLink(site, imdbId, tmdbId, mediaTitle, externalLinksUl);
-        }
+      // Filter sites based on media type (movie or TV)
+      let filteredSites = [];
+      if (!isMovie) {
+        filteredSites = SITES.filter(
+          (site) => !MOVIE_ONLY_SITES.includes(site.name)
+        );
+      } else {
+        filteredSites = SITES.filter(
+          (site) => !TV_ONLY_SITES.includes(site.name)
+        );
+      }
+
+      // Get the current site URL to avoid adding links to the same site
+      const currentSiteURL = window.location.origin;
+      const externalLinksUl = document.querySelector(".meta__ids");
+
+      // Collect all enabled sites that should be displayed
+      const enabledSitesMap = {};
+      ENABLED_SITES.forEach((siteName, index) => {
+        enabledSitesMap[siteName] = index;
       });
+
+      // Filter the sites that should be added
+      const sitesToProcess = filteredSites.filter(site => 
+        ENABLED_SITES.includes(site.name) && 
+        (!site.nameSearchUrl || new URL(site.nameSearchUrl.replace('$Id', '')).origin !== currentSiteURL)
+      );
+
+      // Sort sites to match order in ENABLED_SITES
+      sitesToProcess.sort((a, b) => {
+        const indexA = enabledSitesMap[a.name] !== undefined ? enabledSitesMap[a.name] : Infinity;
+        const indexB = enabledSitesMap[b.name] !== undefined ? enabledSitesMap[b.name] : Infinity;
+        return indexA - indexB;
+      });
+
+      // Process all sites in order and add links
+      (async () => {
+        // Prepare all links (this creates an array of promises)
+        const linkPromises = sitesToProcess.map(site => 
+          prepareLink(site, imdbId, tmdbId, mediaTitle)
+        );
+
+        // Wait for all link preparations to complete
+        const preparedLinks = await Promise.all(linkPromises);
+        
+        // Filter out null results (sites that don't have valid links or no releases)
+        const validLinks = preparedLinks.filter(link => link !== null);
+        
+        // Sort links according to the original order in ENABLED_SITES
+        validLinks.sort((a, b) => {
+          const indexA = enabledSitesMap[a.site.name] !== undefined ? enabledSitesMap[a.site.name] : Infinity;
+          const indexB = enabledSitesMap[b.site.name] !== undefined ? enabledSitesMap[b.site.name] : Infinity;
+          return indexA - indexB;
+        });
+
+        // Create and append links in the correct order
+        validLinks.forEach(link => {
+          const linkElement = createExternalLink(link.url, link.site, link.count);
+          externalLinksUl.appendChild(linkElement);
+        });
+      })();
     })();
   })();
 })();
