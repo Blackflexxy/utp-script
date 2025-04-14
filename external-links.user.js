@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         External Links on UNIT3D
 // @namespace    N/A
-// @version      0.9.6
+// @version      0.9.8
 // @description  Add links to other sites on the metadata section of a torrent item
 // @match        *://*/torrents/*
 // @match        *://*/requests/*
@@ -38,12 +38,15 @@
       // "Aither": "your-api-key",
     },
     SHOW_RELEASE_COUNT: true, // Toggle to show/hide release count badges
+    ENABLE_API_SUPPORT: false, // Toggle to enable/disable API calls
+    SHOW_ICONS_WITHOUT_RELEASES: true, // Toggle to show icons even when no releases are found
   };
 
   // Site Types
   const SITE_TYPES = {
     UNIT3D: "UNIT3D",
     STANDARD: "standard",
+    TRACKER: "tracker",
     // Can add more types here in the future
   };
 
@@ -71,6 +74,14 @@
       type: SITE_TYPES.STANDARD,
     },
     {
+      name: "Letterboxd",
+      icon: "https://a.ltrbxd.com/logos/letterboxd-decal-dots-pos-rgb.svg",
+      imdbSearchUrl: "https://letterboxd.com/imdb/$Id",
+      tmdbSearchUrl: "https://letterboxd.com/tmdb/$Id",
+      nameSearchUrl: "https://letterboxd.com/search/?q=$Id",
+      type: SITE_TYPES.STANDARD,
+    },
+    {
       name: "AniList",
       icon: "https://anilist.co/img/icons/icon.svg",
       imdbSearchUrl: "",
@@ -88,58 +99,21 @@
       type: SITE_TYPES.STANDARD,
     },
     {
-      name: "Letterboxd",
-      icon: "https://a.ltrbxd.com/logos/letterboxd-decal-dots-pos-rgb.svg",
-      imdbSearchUrl: "https://letterboxd.com/imdb/$Id",
-      tmdbSearchUrl: "https://letterboxd.com/tmdb/$Id",
-      nameSearchUrl: "https://letterboxd.com/search/?q=$Id",
-      type: SITE_TYPES.STANDARD,
-    },
-    {
-      name: "Rotten Tomatoes",
-      icon: "https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg",
-      imdbSearchUrl: "",
+      name: "Open Subtitles",
+      icon: "fa-solid fa-closed-captioning",
+      imdbSearchUrl:
+        "https://www.opensubtitles.org/en/search/sublanguageid-all/imdbid-$Id",
       tmdbSearchUrl: "",
       nameSearchUrl:
-        "https://duckduckgo.com/?q=\\$Id+site%3Arottentomatoes.com",
+        "https://www.opensubtitles.org/en/search2/sublanguageid-all/moviename-$Id",
       type: SITE_TYPES.STANDARD,
     },
     {
-      name: "PassThePopcorn",
-      icon: "fa fa-film",
-      imdbSearchUrl:
-        "https://passthepopcorn.me/torrents.php?action=advanced&searchstr=$Id",
-      tmdbSearchUrl: "",
-      nameSearchUrl:
-        "https://passthepopcorn.me/torrents.php?action=advanced&searchstr=$Id",
-      type: SITE_TYPES.STANDARD,
-    },
-    {
-      name: "BroadcasTheNet",
-      icon: "fa-solid fa-power-off",
-      imdbSearchUrl:
-        "https://broadcasthe.net/torrents.php?action=advanced&imdb=$Id",
-      tmdbSearchUrl: "",
-      nameSearchUrl:
-        "https://broadcasthe.net/torrents.php?action=advanced&artistname=$Id",
-      type: SITE_TYPES.STANDARD,
-    },
-    {
-      name: "BeyondHD",
-      icon: "fa fa-circle-star",
-      imdbSearchUrl:
-        "https://beyond-hd.me/torrents?search=&doSearch=Search&imdb=$Id",
-      tmdbSearchUrl:
-        "https://beyond-hd.me/torrents?search=&doSearch=Search&tmdb=$Id",
-      nameSearchUrl: "https://beyond-hd.me/torrents?search=$Id&doSearch=Search",
-      type: SITE_TYPES.STANDARD,
-    },
-    {
-      name: "Blutopia",
-      icon: "fa fa-rocket",
-      imdbSearchUrl: "https://blutopia.cc/torrents?&imdbId=$Id&sortField=size",
-      tmdbSearchUrl: "https://blutopia.cc/torrents?&tmdbId=$Id&sortField=size",
-      nameSearchUrl: "https://blutopia.cc/torrents?&name=$Id&sortField=size",
+      name: "UTP",
+      icon: "fa-brands fa-galactic-republic",
+      imdbSearchUrl: "https://utp.to/torrents?&imdbId=$Id&sortField=size",
+      tmdbSearchUrl: "https://utp.totorrents?&tmdbId=$Id&sortField=size",
+      nameSearchUrl: "https://utp.to/torrents?&name=$Id&sortField=size",
       type: SITE_TYPES.UNIT3D,
     },
     {
@@ -151,22 +125,42 @@
       type: SITE_TYPES.UNIT3D,
     },
     {
-      name: "UTP",
-      icon: "fa-brands fa-galactic-republic",
-      imdbSearchUrl: "https://utp.to/torrents?&imdbId=$Id&sortField=size",
-      tmdbSearchUrl: "https://utp.totorrents?&tmdbId=$Id&sortField=size",
-      nameSearchUrl: "https://utp.to/torrents?&name=$Id&sortField=size",
+      name: "Blutopia",
+      icon: "fa fa-rocket",
+      imdbSearchUrl: "https://blutopia.cc/torrents?&imdbId=$Id&sortField=size",
+      tmdbSearchUrl: "https://blutopia.cc/torrents?&tmdbId=$Id&sortField=size",
+      nameSearchUrl: "https://blutopia.cc/torrents?&name=$Id&sortField=size",
       type: SITE_TYPES.UNIT3D,
     },
     {
-      name: "Open Subtitles",
-      icon: "fa-solid fa-closed-captioning",
+      name: "PassThePopcorn",
+      icon: "fa fa-film",
       imdbSearchUrl:
-        "https://www.opensubtitles.org/en/search/sublanguageid-all/imdbid-$Id",
+        "https://passthepopcorn.me/torrents.php?action=advanced&searchstr=$Id",
       tmdbSearchUrl: "",
       nameSearchUrl:
-        "https://www.opensubtitles.org/en/search2/sublanguageid-all/moviename-$Id",
-      type: SITE_TYPES.STANDARD,
+        "https://passthepopcorn.me/torrents.php?action=advanced&searchstr=$Id",
+      type: SITE_TYPES.TRACKER,
+    },
+    {
+      name: "BroadcasTheNet",
+      icon: "fa-solid fa-power-off",
+      imdbSearchUrl:
+        "https://broadcasthe.net/torrents.php?action=advanced&imdb=$Id",
+      tmdbSearchUrl: "",
+      nameSearchUrl:
+        "https://broadcasthe.net/torrents.php?action=advanced&artistname=$Id",
+      type: SITE_TYPES.TRACKER,
+    },
+    {
+      name: "BeyondHD",
+      icon: "fa fa-circle-star",
+      imdbSearchUrl:
+        "https://beyond-hd.me/torrents?search=&doSearch=Search&imdb=$Id",
+      tmdbSearchUrl:
+        "https://beyond-hd.me/torrents?search=&doSearch=Search&tmdb=$Id",
+      nameSearchUrl: "https://beyond-hd.me/torrents?search=$Id&doSearch=Search",
+      type: SITE_TYPES.TRACKER,
     },
     {
       name: "Upload.cx",
@@ -262,40 +256,82 @@
       return acc;
     }, {});
 
-    // Create UI for site checkboxes and API keys
-    const siteCheckboxes = SITES.map((site) => {
-      const isChecked = enabledSites.includes(site.name) ? "checked" : "";
-
-      // If it's a UNIT3D site, add an API key input field
-      const apiKeyInput = site.type === SITE_TYPES.UNIT3D ?
-        `<br><input type="text" placeholder="API Key" value="${apiKeys[site.name] || ''}" class="apiKey" data-site="${site.name}">` :
-        '';
-
-      return `
-        <div>
-          <label>
-            <input type="checkbox" value="${site.name}" ${isChecked}>
-            ${site.name}${site.type !== SITE_TYPES.STANDARD ? ` (${site.type})` : ""}
-          </label>
-          ${apiKeyInput}
-        </div>
-      `;
-    }).join("");
-
     // Add toggle for showing release count badges
     const showReleaseCount = config.SHOW_RELEASE_COUNT !== false ? "checked" : "";
+    const enableApiSupport = config.ENABLE_API_SUPPORT === true ? "checked" : "";
+    const showIconsWithoutReleases = config.SHOW_ICONS_WITHOUT_RELEASES !== false ? "checked" : "";
 
     const html = `
       <div>
-        <h2>Configure Enabled Sites</h2>
-        <p>For UNIT3D sites, provide API keys to check for available releases.</p>
-        <div style="margin-bottom: 15px;">
-          <label>
-            <input type="checkbox" id="showReleaseCount" ${showReleaseCount}>
-            Show release count badges
-          </label>
+        <h2>Configure External Links</h2>
+        
+        <!-- First row: Settings checkboxes -->
+        <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+          <h3 style="margin-top: 0;">Settings</h3>
+          <div style="margin-bottom: 10px;">
+            <label>
+              <input type="checkbox" id="showReleaseCount" ${showReleaseCount}>
+              Show release count badges
+            </label>
+          </div>
+          <div style="margin-bottom: 10px;">
+            <label>
+              <input type="checkbox" id="enableApiSupport" ${enableApiSupport}>
+              Enable API support
+            </label>
+          </div>
+          <div style="margin-bottom: 10px;">
+            <label>
+              <input type="checkbox" id="showIconsWithoutReleases" ${showIconsWithoutReleases}>
+              Show icons even when no releases are found
+            </label>
+          </div>
         </div>
-        ${siteCheckboxes}
+        
+        <!-- Second row: Split by link type -->
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <!-- STANDARD sites -->
+          <div style="flex: 1; margin-right: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+            <h3 style="margin-top: 0;">STANDARD</h3>
+            ${sitesByType[SITE_TYPES.STANDARD] ? sitesByType[SITE_TYPES.STANDARD].map(site => `
+              <div>
+                <label>
+                  <input type="checkbox" value="${site.name}" ${enabledSites.includes(site.name) ? "checked" : ""}>
+                  ${site.name}
+                </label>
+              </div>
+            `).join("") : "No standard sites"}
+          </div>
+          
+          <!-- TRACKER sites -->
+          <div style="flex: 1; margin-right: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+            <h3 style="margin-top: 0;">TRACKER</h3>
+            ${sitesByType[SITE_TYPES.TRACKER] ? sitesByType[SITE_TYPES.TRACKER].map(site => `
+              <div>
+                <label>
+                  <input type="checkbox" value="${site.name}" ${enabledSites.includes(site.name) ? "checked" : ""}>
+                  ${site.name}
+                </label>
+              </div>
+            `).join("") : "No tracker sites"}
+          </div>
+          
+          <!-- UNIT3D sites -->
+          <div style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+            <h3 style="margin-top: 0;">UNIT3D</h3>
+            ${sitesByType[SITE_TYPES.UNIT3D] ? sitesByType[SITE_TYPES.UNIT3D].map(site => `
+              <div>
+                <label>
+                  <input type="checkbox" value="${site.name}" ${enabledSites.includes(site.name) ? "checked" : ""}>
+                  ${site.name}
+                </label>
+                <br>
+                <input type="text" placeholder="API Key" value="${apiKeys[site.name] || ''}" class="apiKey" data-site="${site.name}">
+              </div>
+            `).join("") : "No UNIT3D sites"}
+          </div>
+        </div>
+        
         <button id="saveConfigBtn">Save</button>
       </div>
     `;
@@ -312,12 +348,13 @@
     configDiv.style.zIndex = "9999";
     configDiv.style.maxHeight = "80%";
     configDiv.style.overflowY = "auto";
+    configDiv.style.minWidth = "800px"; // Make the settings wider
     document.body.appendChild(configDiv);
 
     document
       .getElementById("saveConfigBtn")
       .addEventListener("click", async () => {
-        const checkboxes = configDiv.querySelectorAll('input[type="checkbox"]:not(#showReleaseCount)');
+        const checkboxes = configDiv.querySelectorAll('input[type="checkbox"]:not(#showReleaseCount):not(#enableApiSupport):not(#showIconsWithoutReleases)');
         const newEnabledSites = Array.from(checkboxes)
           .filter((checkbox) => checkbox.checked)
           .map((checkbox) => checkbox.value);
@@ -337,14 +374,19 @@
 
         // Get show release count setting
         const showReleaseCount = document.getElementById('showReleaseCount').checked;
+        const enableApiSupport = document.getElementById('enableApiSupport').checked;
+        const showIconsWithoutReleases = document.getElementById('showIconsWithoutReleases').checked;
 
         config.ENABLED_SITES = newEnabledSites;
         config.API_KEYS = newApiKeys;
         config.SHOW_RELEASE_COUNT = showReleaseCount;
+        config.ENABLE_API_SUPPORT = enableApiSupport;
+        config.SHOW_ICONS_WITHOUT_RELEASES = showIconsWithoutReleases;
 
         await saveConfig(config);
-        alert("Configuration saved!");
+        alert("Configuration saved! The page will now reload.");
         document.body.removeChild(configDiv);
+        window.location.reload();
       });
   }
 
@@ -354,14 +396,26 @@
   // Main logic
   (async () => {
     const config = await loadConfig();
-    const { ENABLED_SITES, ICON_FONT_SIZE, ICON_IMAGE_SIZE, API_KEYS, SHOW_RELEASE_COUNT } = config;
+    const { ENABLED_SITES, ICON_FONT_SIZE, ICON_IMAGE_SIZE, API_KEYS, SHOW_RELEASE_COUNT, ENABLE_API_SUPPORT } = config;
 
     // Check for releases via API based on site type
     async function checkReleasesViaApi(site, imdbId, tmdbId) {
       return new Promise((resolve) => {
+        // Skip API calls if API support is disabled
+        if (!ENABLE_API_SUPPORT) {
+          resolve({ hasReleases: true, count: 0 });
+          return;
+        }
+        
         // Handle different site types
         if (site.type === SITE_TYPES.UNIT3D) {
           return checkUnit3dReleases(site, imdbId, tmdbId, resolve);
+        }
+        
+        // For STANDARD and TRACKER types, use the same behavior
+        if (site.type === SITE_TYPES.STANDARD || site.type === SITE_TYPES.TRACKER) {
+          resolve({ hasReleases: true, count: 0 });
+          return;
         }
 
         // Default behavior for unknown site types or those without API implementation
@@ -373,7 +427,7 @@
     function checkUnit3dReleases(site, imdbId, tmdbId, resolve) {
       // Skip the check if no API key is available
       if (!API_KEYS[site.name]) {
-        resolve({ hasReleases: true, count: 0 }); // Default to showing the link if no API key
+        resolve({ hasReleases: true, count: 0, error: false }); // Default to showing the link if no API key
         return;
       }
 
@@ -386,7 +440,7 @@
       } else if (imdbId) {
         apiUrl += `imdbId=${imdbId}`;
       } else {
-        resolve({ hasReleases: true, count: 0 }); // Default to showing if no IDs available
+        resolve({ hasReleases: true, count: 0, error: false }); // Default to showing if no IDs available
         return;
       }
 
@@ -405,22 +459,23 @@
             const releaseCount = data.data ? data.data.length : 0;
             resolve({
               hasReleases: releaseCount > 0,
-              count: releaseCount
+              count: releaseCount,
+              error: false
             });
           } else {
             console.error(`API request failed for ${site.name}:`, response);
-            resolve({ hasReleases: true, count: 0 }); // Default to showing on error
+            resolve({ hasReleases: true, count: 0, error: true }); // Indicate error
           }
         },
         onerror: function (err) {
           console.error(`API request error for ${site.name}:`, err);
-          resolve({ hasReleases: true, count: 0 }); // Default to showing on error
+          resolve({ hasReleases: true, count: 0, error: true }); // Indicate error
         }
       });
     }
 
     // Function to create an external link element
-    function createExternalLink(url, site, releaseCount) {
+    function createExternalLink(url, site, releaseCount, hasError = false) {
       let linkElement = document.createElement("a");
       let iconHtml = "";
       let image = site.icon.endsWith(".svg") || site.icon.endsWith(".png");
@@ -432,8 +487,16 @@
         (image ? config.ICON_IMAGE_SIZE : config.ICON_FONT_SIZE);
 
       let badgeHtml = "";
-      if (SHOW_RELEASE_COUNT && releaseCount > 0) {
-        badgeHtml = `<span class="release-count-badge">${releaseCount}</span>`;
+      // Only show badges for UNIT3D sites
+      if (site.type === SITE_TYPES.UNIT3D && SHOW_RELEASE_COUNT) {
+        if (hasError) {
+          // Show error indicator
+          badgeHtml = `<span class="release-count-badge error-badge">!</span>`;
+        } else if (releaseCount > 0 || config.SHOW_ICONS_WITHOUT_RELEASES) {
+          // Show count (0 in red if no releases)
+          const badgeClass = releaseCount > 0 ? "release-count-badge" : "release-count-badge zero-badge";
+          badgeHtml = `<span class="${badgeClass}">${releaseCount}</span>`;
+        }
       }
 
       if (site.icon.startsWith("http") && image) {
@@ -486,24 +549,31 @@
             return {
               site: site,
               url: response.response.url,
-              count: 0
+              count: 0,
+              error: false
             };
           }
           return null;
         } catch (err) {
           console.error("KinoBaza fetch failed:", err);
-          return null;
+          return {
+            site: site,
+            url: searchUrl,
+            count: 0,
+            error: true
+          };
         }
       }
 
       // Check for releases on sites with API support if API key is available
-      if (site.type !== SITE_TYPES.STANDARD && API_KEYS[site.name]) {
+      if (site.type !== SITE_TYPES.STANDARD && site.type !== SITE_TYPES.TRACKER && API_KEYS[site.name]) {
         const result = await checkReleasesViaApi(site, imdbId, tmdbId);
-        if (result.hasReleases) {
+        if (result.hasReleases || config.SHOW_ICONS_WITHOUT_RELEASES) {
           return {
             site: site,
             url: searchUrl,
-            count: result.count
+            count: result.count,
+            error: result.error
           };
         } else {
           console.log(`No releases found on ${site.name}, hiding link`);
@@ -514,7 +584,8 @@
         return {
           site: site,
           url: searchUrl,
-          count: 0
+          count: 0,
+          error: false
         };
       }
     }
@@ -569,6 +640,15 @@
             font-weight: bold;
             padding: 0 4px;
             box-shadow: 0 0 3px rgba(0,0,0,0.3);
+        }
+        
+        .release-count-badge.zero-badge {
+            background-color: #dc3545;
+        }
+        
+        .release-count-badge.error-badge {
+            background-color: #ffc107;
+            color: #212529;
         }
     `;
       const stylesheet = new CSSStyleSheet();
@@ -721,7 +801,7 @@
 
         // Create and append links in the correct order
         validLinks.forEach(link => {
-          const linkElement = createExternalLink(link.url, link.site, link.count);
+          const linkElement = createExternalLink(link.url, link.site, link.count, link.error);
           externalLinksUl.appendChild(linkElement);
         });
       })();
