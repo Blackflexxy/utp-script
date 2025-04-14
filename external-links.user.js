@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         External Links on UNIT3D
 // @namespace    N/A
-// @version      0.9.8
+// @version      0.9.9
 // @description  Add links to other sites on the metadata section of a torrent item
 // @match        *://*/torrents/*
 // @match        *://*/requests/*
@@ -37,6 +37,11 @@
       // "Blutopia": "your-api-key",
       // "Aither": "your-api-key",
     },
+    INDEXER_BASE_URLS: {
+      // Store base URLs for indexer sites
+      "jackett_base_url": "http://localhost:9117",
+      "prowlarr_base_url": "http://localhost:9696",
+    },
     SHOW_RELEASE_COUNT: true, // Toggle to show/hide release count badges
     ENABLE_API_SUPPORT: false, // Toggle to enable/disable API calls
     SHOW_ICONS_WITHOUT_RELEASES: true, // Toggle to show icons even when no releases are found
@@ -48,11 +53,12 @@
     UNIT3D: "UNIT3D",
     STANDARD: "standard",
     TRACKER: "tracker",
+    INDEXER: "indexer",
     // Can add more types here in the future
   };
 
   // Sites configuration
-  const MOVIE_ONLY_SITES = ["Letterboxd", "PassThePopcorn", "Anthelion"];
+  const MOVIE_ONLY_SITES = ["Letterboxd", "PassThePopcorn", "Anthelion", "ReelFlix"];
   const TV_ONLY_SITES = ["BroadcasTheNet", "TV Vault"];
 
   const SITES = [
@@ -81,6 +87,14 @@
       tmdbSearchUrl: "https://letterboxd.com/tmdb/$Id",
       nameSearchUrl: "https://letterboxd.com/search/?q=$Id",
       type: SITE_TYPES.STANDARD,
+    },
+    {
+        name: 'Serializd',
+        icon: 'circle-s',
+        imdbSearchUrl: '',
+        tmdbSearchUrl: 'https://serializd.com/show/$Id',
+        nameSearchUrl: 'https://www.serializd.com/search?searchQuery=$Id',
+        type: SITE_TYPES.STANDARD,
     },
     {
       name: "AniList",
@@ -219,6 +233,64 @@
       nameSearchUrl: "https://hawke.uno/torrents?name=$Id",
       type: SITE_TYPES.UNIT3D,
     },
+    {
+        name: 'AsianCinema',
+        icon: 'dragon',
+        imdbSearchUrl: 'https://eiga.moi/torrents?imdb=$Id',
+        tmdbSearchUrl: 'https://eiga.moi/torrents?tmdb=$Id', //Not working
+        nameSearchUrl: 'https://eiga.moi/torrents?name=$Id',
+        type: SITE_TYPES.TRACKER,
+    },
+    {
+        name: 'Cinemaggedon',
+        icon: 'radiation',
+        imdbSearchUrl: 'https://cinemageddon.net/browse.php?search=$Id',
+        tmdbSearchUrl: '',
+        nameSearchUrl: 'https://cinemageddon.net/browse.php?search=$Id',
+        type: SITE_TYPES.TRACKER,
+    },
+    {
+        name: 'PTerClub',
+        icon: 'cat',
+        imdbSearchUrl: 'https://pterclub.com/torrents.php?incldead=0&search_area=4&search=$Id&sort=5&type=desc',
+        tmdbSearchUrl: '',
+        nameSearchUrl: 'https://pterclub.com/torrents.php?incldead=0&search_area=4&search=$Id&sort=5&type=desc',
+        type: SITE_TYPES.TRACKER,
+    },
+    {
+        name: 'Cinematik',
+        icon: 'clapperboard-play',
+        imdbSearchUrl: 'https://cinematik.net/torrents?&imdbId=$Id&sortField=size',
+        tmdbSearchUrl: 'https://cinematik.net/torrents?&tmdbId=$Id&sortField=size',
+        nameSearchUrl: 'https://cinematik.net/torrents?&name=$Id&sortField=size',
+        type: SITE_TYPES.TRACKER,
+    },
+    {
+        name: 'HDBits',
+        icon: 'high-definition',
+        imdbSearchUrl: 'https://hdbits.org/browse.php?sort=size&d=DESC&search=$Id',
+        tmdbSearchUrl: '',
+        nameSearchUrl: 'https://hdbits.org/browse.php?search=$Id',
+        type: SITE_TYPES.TRACKER,
+    },
+    {
+      name: "Jackett",
+      icon: "fa fa-shirt",
+      imdbSearchUrl: "",
+      tmdbSearchUrl: "",
+      nameSearchUrl: "$BASE_URL/UI/Dashboard#search=$Id",
+      type: SITE_TYPES.INDEXER,
+      baseUrlConfigKey: "jackett_base_url",
+    },
+    {
+      name: "Prowlarr",
+      icon: "fa fa-search",
+      imdbSearchUrl: "",
+      tmdbSearchUrl: "",
+      nameSearchUrl: "$BASE_URL/search?query=$Id",
+      type: SITE_TYPES.INDEXER,
+      baseUrlConfigKey: "prowlarr_base_url",
+    },
   ];
 
   // Utility to save and load configuration
@@ -246,8 +318,7 @@
   // Create configuration UI
   async function showConfigUI() {
     const config = await loadConfig();
-    const enabledSites = config.ENABLED_SITES;
-    const apiKeys = config.API_KEYS || {};
+    const { ENABLED_SITES, ICON_FONT_SIZE, ICON_IMAGE_SIZE, API_KEYS, SHOW_RELEASE_COUNT, ENABLE_API_SUPPORT, API_CACHE_EXPIRY } = config;
 
     // Group sites by type for better organization
     const sitesByType = SITES.reduce((acc, site) => {
@@ -265,6 +336,7 @@
     const html = `
       <div>
         <h2>Configure External Links</h2>
+        <button id="saveConfigBtn" style="margin-bottom: 20px;">Save</button>
         
         <!-- First row: Settings checkboxes -->
         <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
@@ -289,7 +361,7 @@
           </div>
         </div>
         
-        <!-- Second row: Split by link type -->
+        <!-- Second row: STANDARD and INDEXER sites -->
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
           <!-- STANDARD sites -->
           <div style="flex: 1; margin-right: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
@@ -297,20 +369,38 @@
             ${sitesByType[SITE_TYPES.STANDARD] ? sitesByType[SITE_TYPES.STANDARD].map(site => `
               <div>
                 <label>
-                  <input type="checkbox" value="${site.name}" ${enabledSites.includes(site.name) ? "checked" : ""}>
+                  <input type="checkbox" value="${site.name}" ${ENABLED_SITES.includes(site.name) ? "checked" : ""}>
                   ${site.name}
                 </label>
               </div>
             `).join("") : "No standard sites"}
           </div>
           
+          <!-- INDEXER sites -->
+          <div style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+            <h3 style="margin-top: 0;">INDEXER</h3>
+            ${sitesByType[SITE_TYPES.INDEXER] ? sitesByType[SITE_TYPES.INDEXER].map(site => `
+              <div>
+                <label>
+                  <input type="checkbox" value="${site.name}" ${ENABLED_SITES.includes(site.name) ? "checked" : ""}>
+                  ${site.name}
+                </label>
+                <br>
+                <input type="text" placeholder="Base URL" value="${config.INDEXER_BASE_URLS[site.baseUrlConfigKey] || ''}" class="indexerBaseUrl" data-site="${site.name}" data-config-key="${site.baseUrlConfigKey}">
+              </div>
+            `).join("") : "No indexer sites"}
+          </div>
+        </div>
+        
+        <!-- Third row: TRACKER and UNIT3D sites -->
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
           <!-- TRACKER sites -->
           <div style="flex: 1; margin-right: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
             <h3 style="margin-top: 0;">TRACKER</h3>
             ${sitesByType[SITE_TYPES.TRACKER] ? sitesByType[SITE_TYPES.TRACKER].map(site => `
               <div>
                 <label>
-                  <input type="checkbox" value="${site.name}" ${enabledSites.includes(site.name) ? "checked" : ""}>
+                  <input type="checkbox" value="${site.name}" ${ENABLED_SITES.includes(site.name) ? "checked" : ""}>
                   ${site.name}
                 </label>
               </div>
@@ -322,18 +412,15 @@
             <h3 style="margin-top: 0;">UNIT3D</h3>
             ${sitesByType[SITE_TYPES.UNIT3D] ? sitesByType[SITE_TYPES.UNIT3D].map(site => `
               <div>
-                <label>
-                  <input type="checkbox" value="${site.name}" ${enabledSites.includes(site.name) ? "checked" : ""}>
+                <label style="min-width: 120px;display: inline-block;">
+                  <input type="checkbox" value="${site.name}" ${ENABLED_SITES.includes(site.name) ? "checked" : ""}>
                   ${site.name}
                 </label>
-                <br>
-                <input type="text" placeholder="API Key" value="${apiKeys[site.name] || ''}" class="apiKey" data-site="${site.name}">
+                <input type="text" placeholder="API Key" value="${API_KEYS[site.name] || ''}" class="apiKey" data-site="${site.name}">
               </div>
             `).join("") : "No UNIT3D sites"}
           </div>
         </div>
-        
-        <button id="saveConfigBtn">Save</button>
       </div>
     `;
 
@@ -347,9 +434,9 @@
     configDiv.style.padding = "20px";
     configDiv.style.border = "1px solid black";
     configDiv.style.zIndex = "9999";
-    configDiv.style.maxHeight = "80%";
+    configDiv.style.maxHeight = "85wh";
     configDiv.style.overflowY = "auto";
-    configDiv.style.minWidth = "800px"; // Make the settings wider
+    configDiv.style.minWidth = "85vw"; // Make the settings wider (960px)
     document.body.appendChild(configDiv);
 
     document
@@ -373,6 +460,19 @@
           }
         });
 
+        // Collect indexer base URLs
+        const indexerBaseUrlInputs = configDiv.querySelectorAll('input.indexerBaseUrl');
+        const newIndexerBaseUrls = {};
+
+        indexerBaseUrlInputs.forEach(input => {
+          const configKey = input.getAttribute('data-config-key');
+          const value = input.value.trim();
+
+          if (value) {
+            newIndexerBaseUrls[configKey] = value;
+          }
+        });
+
         // Get show release count setting
         const showReleaseCount = document.getElementById('showReleaseCount').checked;
         const enableApiSupport = document.getElementById('enableApiSupport').checked;
@@ -380,6 +480,7 @@
 
         config.ENABLED_SITES = newEnabledSites;
         config.API_KEYS = newApiKeys;
+        config.INDEXER_BASE_URLS = newIndexerBaseUrls;
         config.SHOW_RELEASE_COUNT = showReleaseCount;
         config.ENABLE_API_SUPPORT = enableApiSupport;
         config.SHOW_ICONS_WITHOUT_RELEASES = showIconsWithoutReleases;
@@ -583,6 +684,16 @@
         return null; // No valid URL, skip this site
       }
 
+      // Handle INDEXER type sites
+      if (site.type === SITE_TYPES.INDEXER) {
+        const baseUrl = config.INDEXER_BASE_URLS[site.baseUrlConfigKey];
+        if (!baseUrl) {
+          console.log(`No base URL configured for ${site.name}, skipping`);
+          return null;
+        }
+        searchUrl = searchUrl.replace("$BASE_URL", baseUrl);
+      }
+
       // Special handling for KinoBaza
       if (site.name === "KinoBaza") {
         try {
@@ -617,7 +728,7 @@
       }
 
       // Check for releases on sites with API support if API key is available
-      if (site.type !== SITE_TYPES.STANDARD && site.type !== SITE_TYPES.TRACKER && API_KEYS[site.name]) {
+      if (site.type !== SITE_TYPES.STANDARD && site.type !== SITE_TYPES.TRACKER && site.type !== SITE_TYPES.INDEXER && API_KEYS[site.name]) {
         const result = await checkReleasesViaApi(site, imdbId, tmdbId);
         if (result.hasReleases || config.SHOW_ICONS_WITHOUT_RELEASES) {
           return {
@@ -659,6 +770,8 @@
       const overriddenStyles = `
         .meta__ids {
             column-gap: 0;
+            flex-direction: row;
+            flex-wrap: wrap;
         }
 
         .meta-id-tag {
@@ -818,10 +931,25 @@
       });
 
       // Filter the sites that should be added
-      const sitesToProcess = filteredSites.filter(site => 
-        ENABLED_SITES.includes(site.name) && 
-        (!site.nameSearchUrl || new URL(site.nameSearchUrl.replace('$Id', '')).origin !== currentSiteURL)
-      );
+      const sitesToProcess = filteredSites.filter(site => {
+        // First check if the site is enabled
+        if (!ENABLED_SITES.includes(site.name)) {
+          return false;
+        }
+        
+        // For INDEXER type sites, we need to check if the base URL is configured
+        if (site.type === SITE_TYPES.INDEXER) {
+          const baseUrl = config.INDEXER_BASE_URLS[site.baseUrlConfigKey];
+          if (!baseUrl) {
+            return false;
+          }
+          // For INDEXER sites, we don't need to check against currentSiteURL
+          return true;
+        }
+        
+        // For other site types, check if the site is not the current site
+        return !site.nameSearchUrl || new URL(site.nameSearchUrl.replace('$Id', '')).origin !== currentSiteURL;
+      });
 
       // Sort sites to match order in ENABLED_SITES
       sitesToProcess.sort((a, b) => {
