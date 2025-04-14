@@ -40,6 +40,7 @@
     SHOW_RELEASE_COUNT: true, // Toggle to show/hide release count badges
     ENABLE_API_SUPPORT: false, // Toggle to enable/disable API calls
     SHOW_ICONS_WITHOUT_RELEASES: true, // Toggle to show icons even when no releases are found
+    API_CACHE_EXPIRY: 30 * 60 * 1000, // Cache expiry time in milliseconds (30 minutes)
   };
 
   // Site Types
@@ -396,7 +397,39 @@
   // Main logic
   (async () => {
     const config = await loadConfig();
-    const { ENABLED_SITES, ICON_FONT_SIZE, ICON_IMAGE_SIZE, API_KEYS, SHOW_RELEASE_COUNT, ENABLE_API_SUPPORT } = config;
+    const { ENABLED_SITES, ICON_FONT_SIZE, ICON_IMAGE_SIZE, API_KEYS, SHOW_RELEASE_COUNT, ENABLE_API_SUPPORT, API_CACHE_EXPIRY } = config;
+
+    // Cache management functions
+    async function getCachedApiResponse(cacheKey) {
+      try {
+        const cachedData = await GM.getValue(cacheKey);
+        if (!cachedData) return null;
+        
+        // Check if cache is expired
+        if (Date.now() - cachedData.timestamp > API_CACHE_EXPIRY) {
+          console.log(`Cache expired for ${cacheKey}`);
+          return null;
+        }
+        
+        console.log(`Using cached data for ${cacheKey}`);
+        return cachedData.data;
+      } catch (error) {
+        console.error(`Error retrieving cache for ${cacheKey}:`, error);
+        return null;
+      }
+    }
+
+    async function setCachedApiResponse(cacheKey, data) {
+      try {
+        await GM.setValue(cacheKey, {
+          timestamp: Date.now(),
+          data: data
+        });
+        console.log(`Cached data for ${cacheKey}`);
+      } catch (error) {
+        console.error(`Error caching data for ${cacheKey}:`, error);
+      }
+    }
 
     // Check for releases via API based on site type
     async function checkReleasesViaApi(site, imdbId, tmdbId) {
@@ -424,7 +457,7 @@
     }
 
     // Check specifically for UNIT3D releases
-    function checkUnit3dReleases(site, imdbId, tmdbId, resolve) {
+    async function checkUnit3dReleases(site, imdbId, tmdbId, resolve) {
       // Skip the check if no API key is available
       if (!API_KEYS[site.name]) {
         resolve({ hasReleases: true, count: 0, error: false }); // Default to showing the link if no API key
@@ -444,33 +477,51 @@
         return;
       }
 
-      GM.xmlHttpRequest({
-        method: "GET",
-        url: apiUrl,
-        headers: {
-          'Authorization': `Bearer ${API_KEYS[site.name]}`,
-          'Accept': 'application/json',
-        },
-        responseType: "json",
-        onload: function (response) {
-          if (response.status === 200 && response.response) {
-            const data = response.response;
-            // Check if any torrents are found and get the count
-            const releaseCount = data.data ? data.data.length : 0;
-            resolve({
-              hasReleases: releaseCount > 0,
-              count: releaseCount,
-              error: false
-            });
-          } else {
-            console.error(`API request failed for ${site.name}:`, response);
+      // Create a cache key based on the site and ID
+      const cacheKey = `api_cache_${site.name}_${tmdbId || imdbId}`;
+      
+      // Try to get cached response first
+      getCachedApiResponse(cacheKey).then(cachedResponse => {
+        if (cachedResponse) {
+          // Use cached data
+          resolve(cachedResponse);
+          return;
+        }
+        
+        // If no cached data or expired, make the API request
+        GM.xmlHttpRequest({
+          method: "GET",
+          url: apiUrl,
+          headers: {
+            'Authorization': `Bearer ${API_KEYS[site.name]}`,
+            'Accept': 'application/json',
+          },
+          responseType: "json",
+          onload: function (response) {
+            if (response.status === 200 && response.response) {
+              const data = response.response;
+              // Check if any torrents are found and get the count
+              const releaseCount = data.data ? data.data.length : 0;
+              const result = {
+                hasReleases: releaseCount > 0,
+                count: releaseCount,
+                error: false
+              };
+              
+              // Cache the successful response
+              setCachedApiResponse(cacheKey, result);
+              
+              resolve(result);
+            } else {
+              console.error(`API request failed for ${site.name}:`, response);
+              resolve({ hasReleases: true, count: 0, error: true }); // Indicate error
+            }
+          },
+          onerror: function (err) {
+            console.error(`API request error for ${site.name}:`, err);
             resolve({ hasReleases: true, count: 0, error: true }); // Indicate error
           }
-        },
-        onerror: function (err) {
-          console.error(`API request error for ${site.name}:`, err);
-          resolve({ hasReleases: true, count: 0, error: true }); // Indicate error
-        }
+        });
       });
     }
 
