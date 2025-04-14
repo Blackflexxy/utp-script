@@ -31,6 +31,8 @@
     CUSTOM_ICON_SIZES: {
       // Define custom sizes for specific sites
       AniDB: { width: "30px", height: "30px" },
+      Prowlarr: { width: "30px", height: "30px" },
+      Jackett: { width: "30px", height: "30px" },
     },
     API_KEYS: {
       // Store API keys for sites by type
@@ -275,7 +277,7 @@
     },
     {
       name: "Jackett",
-      icon: "fa fa-shirt",
+      icon: "https://i.ibb.co/jPdy4sCY/image.png",
       imdbSearchUrl: "",
       tmdbSearchUrl: "",
       nameSearchUrl: "$BASE_URL/UI/Dashboard#search=$Id",
@@ -284,7 +286,7 @@
     },
     {
       name: "Prowlarr",
-      icon: "fa-regular fa-radar",
+      icon: "https://i.ibb.co/4wtjZPN2/image.png",
       imdbSearchUrl: "",
       tmdbSearchUrl: "",
       nameSearchUrl: "$BASE_URL/search?query=$Id",
@@ -599,7 +601,7 @@
           },
           responseType: "json",
           onload: function (response) {
-            if (response.status === 200 && response.response) {
+            if (response.status === 200 && response.response ) {
               const data = response.response;
               // Check if any torrents are found and get the count
               let result = '';
@@ -610,7 +612,7 @@
               else
               {
                   const releaseCount = data.data ? data.data.length : 0;
-                  result = {
+                  result= {
                     hasReleases: releaseCount > 0,
                     count: releaseCount,
                     error: false
