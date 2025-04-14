@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         External Links on UNIT3D
 // @namespace    N/A
-// @version      0.9.9
+// @version      0.9.9.1
 // @description  Add links to other sites on the metadata section of a torrent item
 // @match        *://*/torrents/*
 // @match        *://*/requests/*
@@ -337,7 +337,7 @@
       <div>
         <h2>Configure External Links</h2>
         <button id="saveConfigBtn" style="margin-bottom: 20px;">Save</button>
-        
+
         <!-- First row: Settings checkboxes -->
         <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
           <h3 style="margin-top: 0;">Settings</h3>
@@ -360,7 +360,7 @@
             </label>
           </div>
         </div>
-        
+
         <!-- Second row: STANDARD and INDEXER sites -->
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
           <!-- STANDARD sites -->
@@ -375,7 +375,7 @@
               </div>
             `).join("") : "No standard sites"}
           </div>
-          
+
           <!-- INDEXER sites -->
           <div style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
             <h3 style="margin-top: 0;">INDEXER</h3>
@@ -391,7 +391,7 @@
             `).join("") : "No indexer sites"}
           </div>
         </div>
-        
+
         <!-- Third row: TRACKER and UNIT3D sites -->
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
           <!-- TRACKER sites -->
@@ -406,7 +406,7 @@
               </div>
             `).join("") : "No tracker sites"}
           </div>
-          
+
           <!-- UNIT3D sites -->
           <div style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
             <h3 style="margin-top: 0;">UNIT3D</h3>
@@ -505,13 +505,13 @@
       try {
         const cachedData = await GM.getValue(cacheKey);
         if (!cachedData) return null;
-        
+
         // Check if cache is expired
         if (Date.now() - cachedData.timestamp > API_CACHE_EXPIRY) {
           console.log(`Cache expired for ${cacheKey}`);
           return null;
         }
-        
+
         console.log(`Using cached data for ${cacheKey}`);
         return cachedData.data;
       } catch (error) {
@@ -540,12 +540,12 @@
           resolve({ hasReleases: true, count: 0 });
           return;
         }
-        
+
         // Handle different site types
         if (site.type === SITE_TYPES.UNIT3D) {
           return checkUnit3dReleases(site, imdbId, tmdbId, resolve);
         }
-        
+
         // For STANDARD and TRACKER types, use the same behavior
         if (site.type === SITE_TYPES.STANDARD || site.type === SITE_TYPES.TRACKER) {
           resolve({ hasReleases: true, count: 0 });
@@ -580,7 +580,7 @@
 
       // Create a cache key based on the site and ID
       const cacheKey = `api_cache_${site.name}_${tmdbId || imdbId}`;
-      
+
       // Try to get cached response first
       getCachedApiResponse(cacheKey).then(cachedResponse => {
         if (cachedResponse) {
@@ -588,7 +588,7 @@
           resolve(cachedResponse);
           return;
         }
-        
+
         // If no cached data or expired, make the API request
         GM.xmlHttpRequest({
           method: "GET",
@@ -602,16 +602,24 @@
             if (response.status === 200 && response.response) {
               const data = response.response;
               // Check if any torrents are found and get the count
-              const releaseCount = data.data ? data.data.length : 0;
-              const result = {
-                hasReleases: releaseCount > 0,
-                count: releaseCount,
-                error: false
-              };
-              
+              let result = '';
+              if(data.data == "404")
+              {
+                 result = { hasReleases: false, count: 0, error: false };
+              }
+              else
+              {
+                  const releaseCount = data.data ? data.data.length : 0;
+                  result = {
+                    hasReleases: releaseCount > 0,
+                    count: releaseCount,
+                    error: false
+                  };
+              }
+
               // Cache the successful response
               setCachedApiResponse(cacheKey, result);
-              
+
               resolve(result);
             } else {
               console.error(`API request failed for ${site.name}:`, response);
@@ -706,7 +714,7 @@
               onerror: reject
             });
           });
-          
+
           if (response.response && response.response.url) {
             return {
               site: site,
@@ -805,11 +813,11 @@
             padding: 0 4px;
             box-shadow: 0 0 3px rgba(0,0,0,0.3);
         }
-        
+
         .release-count-badge.zero-badge {
             background-color: #dc3545;
         }
-        
+
         .release-count-badge.error-badge {
             background-color: #ffc107;
             color: #212529;
@@ -880,7 +888,7 @@
       }
 
       // Extract torrent__name from the page
-      const torrentNameElement = document.querySelector(".torrent__name"); 
+      const torrentNameElement = document.querySelector(".torrent__name");
       const torrentName = torrentNameElement
         ? torrentNameElement.textContent.trim()
         : "";
@@ -935,7 +943,7 @@
         if (!ENABLED_SITES.includes(site.name)) {
           return false;
         }
-        
+
         // For INDEXER type sites, we need to check if the base URL is configured
         if (site.type === SITE_TYPES.INDEXER) {
           const baseUrl = config.INDEXER_BASE_URLS[site.baseUrlConfigKey];
@@ -945,7 +953,7 @@
           // For INDEXER sites, we don't need to check against currentSiteURL
           return true;
         }
-        
+
         // For other site types, check if the site is not the current site
         return !site.nameSearchUrl || new URL(site.nameSearchUrl.replace('$Id', '')).origin !== currentSiteURL;
       });
@@ -960,16 +968,16 @@
       // Process all sites in order and add links
       (async () => {
         // Prepare all links (this creates an array of promises)
-        const linkPromises = sitesToProcess.map(site => 
+        const linkPromises = sitesToProcess.map(site =>
           prepareLink(site, imdbId, tmdbId, mediaTitle)
         );
 
         // Wait for all link preparations to complete
         const preparedLinks = await Promise.all(linkPromises);
-        
+
         // Filter out null results (sites that don't have valid links or no releases)
         const validLinks = preparedLinks.filter(link => link !== null);
-        
+
         // Sort links according to the original order in ENABLED_SITES
         validLinks.sort((a, b) => {
           const indexA = enabledSitesMap[a.site.name] !== undefined ? enabledSitesMap[a.site.name] : Infinity;
