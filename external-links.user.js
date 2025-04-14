@@ -90,7 +90,7 @@
     },
     {
         name: 'Serializd',
-        icon: 'circle-s',
+        icon: 'https://i.ibb.co/k2zF7C60/image.png',
         imdbSearchUrl: '',
         tmdbSearchUrl: 'https://serializd.com/show/$Id',
         nameSearchUrl: 'https://www.serializd.com/search?searchQuery=$Id',
@@ -235,7 +235,7 @@
     },
     {
         name: 'AsianCinema',
-        icon: 'dragon',
+        icon: 'fa-solid fa-dragon',
         imdbSearchUrl: 'https://eiga.moi/torrents?imdb=$Id',
         tmdbSearchUrl: 'https://eiga.moi/torrents?tmdb=$Id', //Not working
         nameSearchUrl: 'https://eiga.moi/torrents?name=$Id',
@@ -243,7 +243,7 @@
     },
     {
         name: 'Cinemaggedon',
-        icon: 'radiation',
+        icon: 'fa-solid fa-circle-radiation',
         imdbSearchUrl: 'https://cinemageddon.net/browse.php?search=$Id',
         tmdbSearchUrl: '',
         nameSearchUrl: 'https://cinemageddon.net/browse.php?search=$Id',
@@ -251,7 +251,7 @@
     },
     {
         name: 'PTerClub',
-        icon: 'cat',
+        icon: 'fa-solid fa-shield-cat',
         imdbSearchUrl: 'https://pterclub.com/torrents.php?incldead=0&search_area=4&search=$Id&sort=5&type=desc',
         tmdbSearchUrl: '',
         nameSearchUrl: 'https://pterclub.com/torrents.php?incldead=0&search_area=4&search=$Id&sort=5&type=desc',
@@ -259,7 +259,7 @@
     },
     {
         name: 'Cinematik',
-        icon: 'clapperboard-play',
+        icon: 'fa-solid fa-clapperboard',
         imdbSearchUrl: 'https://cinematik.net/torrents?&imdbId=$Id&sortField=size',
         tmdbSearchUrl: 'https://cinematik.net/torrents?&tmdbId=$Id&sortField=size',
         nameSearchUrl: 'https://cinematik.net/torrents?&name=$Id&sortField=size',
@@ -267,7 +267,7 @@
     },
     {
         name: 'HDBits',
-        icon: 'high-definition',
+        icon: 'fa-solid fa-high-definition',
         imdbSearchUrl: 'https://hdbits.org/browse.php?sort=size&d=DESC&search=$Id',
         tmdbSearchUrl: '',
         nameSearchUrl: 'https://hdbits.org/browse.php?search=$Id',
@@ -284,7 +284,7 @@
     },
     {
       name: "Prowlarr",
-      icon: "fa fa-search",
+      icon: "fa-regular fa-radar",
       imdbSearchUrl: "",
       tmdbSearchUrl: "",
       nameSearchUrl: "$BASE_URL/search?query=$Id",
@@ -880,13 +880,12 @@
       }
 
       // Extract torrent__name from the page
-      const torrentNameElement = document.querySelector(".torrent__name"); // Adjust this selector based on the actual structure of the page
+      const torrentNameElement = document.querySelector(".torrent__name"); 
       const torrentName = torrentNameElement
         ? torrentNameElement.textContent.trim()
         : "";
 
-      // Determine if it's a movie or not
-      let extractedTitle = "";
+      let extractedTitle = mediaTitle;
       if (torrentName) {
         extractedTitle = parseTorrentName(torrentName, isMovie);
       }
