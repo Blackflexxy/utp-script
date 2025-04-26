@@ -1,8 +1,9 @@
 export class UIHandler {
-    constructor(mediaInfoParser, utils, config) {
+    constructor(mediaInfoParser, utils, config, dataValidator) {
         this.mediaInfoParser = mediaInfoParser;
         this.utils = utils;
         this.config = config;
+        this.dataValidator = dataValidator;
         this.mediaInfoTextarea = null;
         this.outputDiv = null;
         this.fileInput = null;
@@ -112,15 +113,15 @@ export class UIHandler {
         rows.forEach((row) => {
             if (!row) return;
 
-            const isValid = this.dataValidator.validateRow(row.title, row.format);
+            const isValid = row.title && row.format ? this.dataValidator.validateRow(row.title, row.format) : false;
             table += `
                 <tr>
-                    <td>${this.utils.getTypeIcon(row.type, this.config)}</td>
-                    <td>${this.utils.getCountryFlag(row.language, this.config)} ${row.language}</td>
-                    <td>${this.utils.renderYesNoIcon(row.default)}</td>
-                    <td>${this.utils.renderYesNoIcon(row.forced)}</td>
-                    <td>${row.title}</td>
-                    <td>${row.format}</td>
+                    <td>${this.utils.getTypeIcon(row.type || '', this.config)}</td>
+                    <td>${this.utils.getCountryFlag(row.language || 'Unknown', this.config)} ${row.language || 'Unknown'}</td>
+                    <td>${this.utils.renderYesNoIcon(row.default || 'No')}</td>
+                    <td>${this.utils.renderYesNoIcon(row.forced || 'No')}</td>
+                    <td>${row.title || ''}</td>
+                    <td>${row.format || ''}</td>
                     <td>${this.utils.renderValidationIcon(isValid)}</td>
                 </tr>
             `;

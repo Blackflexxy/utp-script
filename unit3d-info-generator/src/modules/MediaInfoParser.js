@@ -5,47 +5,59 @@ export class MediaInfoParser {
     }
 
     parseMediaInfo(text) {
-        if (!this.dataValidator.validateMediaInfo(text)) {
-            this.utils.error('Invalid MediaInfo text');
+        try {
+            if (!this.dataValidator.validateMediaInfo(text)) {
+                this.utils.error('Invalid MediaInfo text');
+                return [];
+            }
+
+            const sections = text.split("\n\n");
+            const rows = [];
+
+            sections.forEach((section) => {
+                try {
+                    const lines = section.split("\n").filter(line => line.trim() !== "");
+                    const typeLine = lines.find(line => 
+                        line.startsWith("General") || 
+                        line.startsWith("Video") || 
+                        line.startsWith("Audio") || 
+                        line.startsWith("Text") || 
+                        line.startsWith("Chapters")
+                    );
+
+                    if (!typeLine) return;
+
+                    const type = typeLine.split(" ")[0].toLowerCase();
+                    
+                    if (!this.dataValidator.validateSection(section, type)) {
+                        this.utils.error(`Invalid ${type} section`);
+                        return;
+                    }
+
+                    switch (type) {
+                        case "video":
+                            const videoInfo = this.parseVideoInfo(lines);
+                            if (videoInfo) rows.push(videoInfo);
+                            break;
+                        case "audio":
+                            const audioInfo = this.parseAudioInfo(lines);
+                            if (audioInfo) rows.push(audioInfo);
+                            break;
+                        case "text":
+                            const subtitleInfo = this.parseSubtitleInfo(lines);
+                            if (subtitleInfo) rows.push(subtitleInfo);
+                            break;
+                    }
+                } catch (error) {
+                    this.utils.error('Error parsing section:', error);
+                }
+            });
+
+            return rows;
+        } catch (error) {
+            this.utils.error('Error parsing MediaInfo:', error);
             return [];
         }
-
-        const sections = text.split("\n\n");
-        const rows = [];
-
-        sections.forEach((section) => {
-            const lines = section.split("\n").filter(line => line.trim() !== "");
-            const typeLine = lines.find(line => 
-                line.startsWith("General") || 
-                line.startsWith("Video") || 
-                line.startsWith("Audio") || 
-                line.startsWith("Text") || 
-                line.startsWith("Chapters")
-            );
-
-            if (!typeLine) return;
-
-            const type = typeLine.split(" ")[0].toLowerCase();
-            
-            if (!this.dataValidator.validateSection(section, type)) {
-                this.utils.error(`Invalid ${type} section`);
-                return;
-            }
-
-            switch (type) {
-                case "video":
-                    rows.push(this.parseVideoInfo(lines));
-                    break;
-                case "audio":
-                    rows.push(this.parseAudioInfo(lines));
-                    break;
-                case "text":
-                    rows.push(this.parseSubtitleInfo(lines));
-                    break;
-            }
-        });
-
-        return rows;
     }
 
     parseVideoInfo(lines) {

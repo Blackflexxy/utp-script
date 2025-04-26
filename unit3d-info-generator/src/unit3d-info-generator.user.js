@@ -24,7 +24,7 @@ import { Utils } from './modules/Utils.js';
     const utils = new Utils();
     const dataValidator = new DataValidator();
     const mediaInfoParser = new MediaInfoParser(dataValidator, utils);
-    const uiHandler = new UIHandler(mediaInfoParser, utils, config);
+    const uiHandler = new UIHandler(mediaInfoParser, utils, config, dataValidator);
 
     // Start the application
     uiHandler.initialize();
