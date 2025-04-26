@@ -1,0 +1,12 @@
+{
+  "name": "unit3d-info-generator",
+  "version": "1.5.0",
+  "description": "MediaInfo Parser for Release",
+  "main": "build.js",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "dependencies": {
+    "fs-extra": "^11.2.0"
+  }
+} 
