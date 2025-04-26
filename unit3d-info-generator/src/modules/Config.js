@@ -63,7 +63,7 @@ export class Config {
 
         this.CODEC_FORMATTING = {
             "AAC LC": "AAC",
-            "MLP FBA": "TrueHD Atmos",
+            "MLP FBA": "TrueHD",
             "MLP FBA 16-ch": "TrueHD Atmos",
             "DTS XLL": "DTS-HD MA"
         };

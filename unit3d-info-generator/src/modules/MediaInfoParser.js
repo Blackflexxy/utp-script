@@ -1,7 +1,8 @@
 export class MediaInfoParser {
-    constructor(dataValidator, utils) {
+    constructor(dataValidator, utils, config) {
         this.dataValidator = dataValidator;
         this.utils = utils;
+        this.config = config;
     }
 
     parseMediaInfo(text) {
@@ -81,6 +82,17 @@ export class MediaInfoParser {
             return null;
         }
 
+        // Format codec name
+        const codec = this.utils.formatCodec(info.format, this.config);
+
+        // Build the format string
+        info.format = `${info.language} | ${codec} | ${info.channels} | ${info.bitrate || "Unknown"}`;
+
+        // Append Title to Format if Title doesn't start with "Country |"
+        if (info.title && !info.title.startsWith(`${info.language} |`)) {
+            info.format += ` | ${info.title}`;
+        }
+
         return info;
     }
 
@@ -91,6 +103,20 @@ export class MediaInfoParser {
         if (!this.dataValidator.validateSubtitleInfo(info)) {
             this.utils.error('Invalid subtitle info');
             return null;
+        }
+
+        // Check for SDH in title
+        if (info.title && info.title.includes('SDH')) {
+            info.format = `${info.language} | SDH`;
+        } else {
+            info.format = info.forced === "Yes" ?
+                `${info.language} | Forced` :
+                `${info.language} | Full`;
+        }
+
+        // Append Title to Format if Title doesn't start with "Country |"
+        if (info.title && !info.title.startsWith(`${info.language} |`)) {
+            info.format += ` | ${info.title}`;
         }
 
         return info;
