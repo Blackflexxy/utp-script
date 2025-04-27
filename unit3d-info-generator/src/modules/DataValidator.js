@@ -3,7 +3,7 @@ export class DataValidator {
         this.requiredFields = {
             video: ['Format', 'Language'],
             audio: ['Format', 'Language', 'Channel(s)', 'Bit rate'],
-            subtitles: ['Format', 'Language']
+            text: ['Format', 'Language']
         };
     }
 
