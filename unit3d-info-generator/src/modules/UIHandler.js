@@ -113,7 +113,7 @@ export class UIHandler {
         rows.forEach((row) => {
             if (!row) return;
 
-            const isValid = row.title && row.format ? this.dataValidator.validateRow(row.title, row.format) : false;
+            const isValid = this.dataValidator.validateFormat(row);
             table += `
                 <tr>
                     <td>${this.utils.getTypeIcon(row.type || '', this.config)}</td>

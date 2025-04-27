@@ -85,12 +85,20 @@ export class MediaInfoParser {
         // Format codec name
         const codec = this.utils.formatCodec(info.format, this.config);
 
-        // Build the format string
-        info.format = `${info.language} | ${codec} | ${info.channels} | ${info.bitrate || "Unknown"}`;
-
-        // Append Title to Format if Title doesn't start with "Country |"
-        if (info.title && !info.title.startsWith(`${info.language} |`)) {
-            info.format += ` | ${info.title}`;
+        // Build the base format string (this is our validation format)
+        const baseFormat = `${info.language} | ${codec} | ${info.channels} | ${info.bitrate || "Unknown"}`;
+        
+        // Check if title follows our standard format
+        const isStandardFormat = info.title && info.title.startsWith(info.language + " |");
+        
+        if (isStandardFormat) {
+            // For standard format, extract additional info after bitrate from title
+            const titleParts = info.title.split(" | ");
+            const additionalInfo = titleParts.slice(4).join(" | ");
+            info.format = additionalInfo ? `${baseFormat} | ${additionalInfo}` : baseFormat;
+        } else {
+            // For non-standard format, append the entire title
+            info.format = info.title ? `${baseFormat} | ${info.title}` : baseFormat;
         }
 
         return info;
@@ -105,18 +113,28 @@ export class MediaInfoParser {
             return null;
         }
 
-        // Check for SDH in title
+        // Build the base format string (this is our validation format)
+        let baseFormat;
         if (info.title && info.title.includes('SDH')) {
-            info.format = `${info.language} | SDH`;
+            baseFormat = `${info.language} | SDH`;
         } else {
-            info.format = info.forced === "Yes" ?
+            baseFormat = info.forced === "Yes" ?
                 `${info.language} | Forced` :
                 `${info.language} | Full`;
         }
 
-        // Append Title to Format if Title doesn't start with "Country |"
-        if (info.title && !info.title.startsWith(`${info.language} |`)) {
-            info.format += ` | ${info.title}`;
+        // Check if title follows our standard format
+        const isStandardFormat = info.title && info.title.startsWith(info.language + " |");
+        
+        if (isStandardFormat) {
+            // For standard format, extract additional info after base format
+            const titleParts = info.title.split(" | ");
+            const basePartCount = baseFormat.split(" | ").length;
+            const additionalInfo = titleParts.slice(basePartCount).join(" | ");
+            info.format = additionalInfo ? `${baseFormat} | ${additionalInfo}` : baseFormat;
+        } else {
+            // For non-standard format, append the entire title
+            info.format = info.title ? `${baseFormat} | ${info.title}` : baseFormat;
         }
 
         return info;
