@@ -7,29 +7,71 @@ export class UIHandler {
         this.mediaInfoTextarea = null;
         this.outputDiv = null;
         this.fileInput = null;
+        this.isCreatePage = false;
     }
 
     initialize() {
         this.utils.log('Initializing UI Handler');
         
+        // Check if we're on create or view page
+        this.isCreatePage = window.location.pathname.endsWith('/create');
+        
+        if (this.isCreatePage) {
+            this.initializeCreatePage();
+        } else {
+            this.initializeViewPage();
+        }
+    }
+
+    initializeCreatePage() {
         // Use setInterval to wait for the DOM to be ready
         const interval = setInterval(() => {
             this.mediaInfoTextarea = document.querySelector(this.config.DOM_SELECTORS.MEDIAINFO_TEXTAREA);
             if (this.mediaInfoTextarea) {
                 clearInterval(interval);
-                this.setupUI();
+                this.setupCreatePageUI();
             }
         }, 500);
     }
 
-    setupUI() {
+    initializeViewPage() {
+        // Use setInterval to wait for the DOM to be ready
+        const interval = setInterval(() => {
+            const mediainfoElement = document.querySelector('code[x-ref="mediainfo"]');
+            const subtitlesElement = document.querySelector('.mediainfo__subtitles');
+            
+            if (mediainfoElement && subtitlesElement) {
+                clearInterval(interval);
+                this.setupViewPageUI(mediainfoElement, subtitlesElement);
+            }
+        }, 500);
+    }
+
+    setupCreatePageUI() {
         try {
             this.createFileInput();
             this.createOutputDiv();
             this.setupEventListeners();
-            this.utils.log('UI setup completed');
+            this.utils.log('Create page UI setup completed');
         } catch (error) {
-            this.utils.error('Error setting up UI:', error);
+            this.utils.error('Error setting up create page UI:', error);
+        }
+    }
+
+    setupViewPageUI(mediainfoElement, subtitlesElement) {
+        try {
+            this.createOutputDiv();
+            this.outputDiv.style.marginTop = '20px';
+            subtitlesElement.parentNode.insertBefore(this.outputDiv, subtitlesElement.nextSibling);
+            
+            // Parse and render the MediaInfo
+            const mediainfoText = mediainfoElement.textContent;
+            const parsedData = this.mediaInfoParser.parseMediaInfo(mediainfoText);
+            this.renderData(parsedData);
+            
+            this.utils.log('View page UI setup completed');
+        } catch (error) {
+            this.utils.error('Error setting up view page UI:', error);
         }
     }
 
@@ -54,10 +96,14 @@ export class UIHandler {
 
     createOutputDiv() {
         this.outputDiv = document.createElement('div');
-        this.outputDiv.id = this.config.DOM_SELECTORS.OUTPUT_DIV.slice(1);
+        this.outputDiv.id = this.isCreatePage ? 
+            this.config.DOM_SELECTORS.OUTPUT_DIV_CREATE.slice(1) : 
+            this.config.DOM_SELECTORS.OUTPUT_DIV_VIEW.slice(1);
         
-        const mediaInfoGroup = this.mediaInfoTextarea.closest(this.config.DOM_SELECTORS.MEDIAINFO_GROUP);
-        mediaInfoGroup.parentNode.insertBefore(this.outputDiv, mediaInfoGroup);
+        if (this.isCreatePage) {
+            const mediaInfoGroup = this.mediaInfoTextarea.closest(this.config.DOM_SELECTORS.MEDIAINFO_GROUP);
+            mediaInfoGroup.parentNode.insertBefore(this.outputDiv, mediaInfoGroup);
+        }
     }
 
     setupEventListeners() {

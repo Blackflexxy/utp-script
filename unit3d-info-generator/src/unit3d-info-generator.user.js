@@ -1,8 +1,9 @@
 // ==UserScript==
 // @name         MediaInfo Parser for Release
 // @version      1.6
-// @description  Parse MediaInfo and generate a table on /torrents/create
+// @description  Parse MediaInfo and generate a table on /torrents/create and /torrents/*
 // @match        *://*/torrents/create
+// @match        *://*/torrents/*
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/maksii/utp-script/main/unit3d-info-generator.user.js
 // @downloadURL  https://raw.githubusercontent.com/maksii/utp-script/main/unit3d-info-generator.user.js

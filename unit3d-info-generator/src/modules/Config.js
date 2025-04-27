@@ -3,7 +3,9 @@ export class Config {
         this.DOM_SELECTORS = {
             MEDIAINFO_TEXTAREA: '#upload-form-mediainfo',
             MEDIAINFO_GROUP: '.form__group',
-            OUTPUT_DIV: '#output'
+            OUTPUT_DIV_CREATE: '#output',
+            OUTPUT_DIV_VIEW: '#mediainfo-parser-output',
+            VIEW_MEDIAINFO: 'code[x-ref="mediainfo"]'
         };
 
         this.UI_CONFIG = {
