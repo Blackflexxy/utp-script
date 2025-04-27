@@ -14,12 +14,18 @@ export class Utils {
     }
 
     getField(lines, field) {
-        const line = lines.find((line) => line.trim().startsWith(field));
-        return line ? line.split(":")[1].trim() : "";
+        // Escape special regex characters in the field name
+        const escapedField = field.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        // Match field at start of line, followed by spaces and colon
+        const fieldRegex = new RegExp(`^${escapedField}\\s*:\\s*(.+)`);
+        const line = lines.find(line => fieldRegex.test(line));
+        return line ? line.match(fieldRegex)[1].trim() : "";
     }
 
     formatChannels(channels) {
-        const numChannels = channels.replace(" channels", "").replace(" channel", "");
+        // Extract the number from "X channels" format
+        const numChannels = channels.replace(/\s*channels?/i, "");
+        
         switch (numChannels) {
             case "6":
                 return "5.1";
