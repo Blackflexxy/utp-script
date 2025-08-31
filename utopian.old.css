@@ -1,0 +1,195 @@
+body {
+    background: #191d2a;
+    background-size: 300px auto
+}
+
+.top-nav {
+    background-color: #1b2438
+}
+
+.col-md-10 {
+    background-color: #232b41;
+    box-shadow: 0 5px 5px -10px #0000006b,0 4px 10px #0000001f,0 8px 10px -5px #0003!important;
+    margin-top: 15px;
+    padding-top: 10px
+}
+
+.panel-chat>.panel-heading {
+    background-color: #1d212f
+}
+
+.container>.block,.container>.box,.container>.well {
+    background: #232b41
+}
+
+.block,.container>.block,.container>.box,.container>.well,.well {
+    box-shadow: 0 5px 5px -10px #0000006b,0 4px 10px #0000001f,0 8px 10px -5px #0003!important
+}
+
+.block,.well {
+    background: #232b41!important
+}
+
+.container.box {
+    background: #232b41;
+    box-shadow: 0 5px 5px -10px #0000006b,0 4px 10px #0000001f,0 8px 10px -5px #0003!important
+}
+
+.alert-info {
+    background-color: #1d212f;
+    border-color: #1d212f
+}
+
+.notify .point {
+    background-color: #9ab0ff
+}
+
+.h1,.h2,.h3,.h4,.h5,.h6,h1,h2,h3,h4,h5,h6 {
+    color: #fff
+}
+
+.head {
+    background-color: #423f4194
+}
+
+.form-control {
+    background-color: #ffffff29;
+    border: 2px solid rgba(0,0,0,.56);
+    color: #fff
+}
+
+hr {
+    border-top: 1px solid #525252
+}
+
+.form-control {
+    margin-top: 0
+}
+
+.form-control:focus {
+    border-color: #7289da
+}
+
+.mb-5 {
+    background-color: #353535
+}
+
+ul.nav.nav-tabs.mb-5 {
+    padding: 0
+}
+
+.alert-danger,.btn-danger {
+    background-color: #ff5ebb4f
+}
+
+.btn-success {
+    background-color: #6fffaf4f
+}
+
+.btn-primary,.panel-primary,.panel-primary>.panel-heading {
+    background-color: #7590ce
+}
+
+.text-red {
+    color: #e06666
+}
+
+.text-green {
+    color: #63ce9f
+}
+
+.text-orange {
+    color: #e08b3d
+}
+
+.text-purple {
+    color: #c09fe0
+}
+
+.text-info {
+    color: #73c2dbd4
+}
+
+.text-danger {
+    color: #e06666
+}
+
+.text-success {
+    color: #63ce9f
+}
+
+.text-pink {
+    color: #ff7cd1d1
+}
+
+a {
+    color: #8fa8e0
+}
+
+.badge-extra {
+    border: 1px solid rgba(66,70,92,.61);
+    border-radius: 0
+}
+
+.badge-extra.text-red {
+    color: #e06666
+}
+
+i.torrent-icon {
+    color: #c9b5ffde
+}
+
+div.stats {
+    background-color: #1e1e1e82
+}
+
+.lead,blockquote {
+    color: #fff
+}
+
+.media {
+    border-left-color: #4e6bbc
+}
+
+select option {
+    background-color: #464d60
+}
+
+.badge-user {
+    border-radius: 0
+}
+
+.alert {
+    border: 3px solid transparent
+}
+
+.alert-info {
+    background-color: #3e3b64;
+    color: #d4d1fd
+}
+
+.alert-danger {
+    background-color: #633030;
+    color: #faa
+}
+
+.panel {
+    background-color: #0e152240;
+    border: 3px solid transparent
+}
+
+.panel a:focus,.panel a:hover {
+    color: #fff
+}
+
+.panel-heading {
+    border-bottom: 3px solid transparent
+}
+
+.secondary-nav {
+    background-color: #293346
+}
+
+.quick-search__inputs {
+    background-color: #00000040
+}
